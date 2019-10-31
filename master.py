@@ -5,6 +5,9 @@ import random
 pygame.init()
 pygame.font.init()
 
+#Sets a font, to use for damage text
+DMGFont = pygame.font.Font('freesansbold.ttf', 40)
+
 #Import images
 sumfin = pygame.image.load("")
 
@@ -15,6 +18,26 @@ playerDict = {
     "gold": 0
     #"xp": 0
 }
+class PlayerClass:
+    def __init__(self, image=wizard, x=300, y=300):
+        self.image = image
+        self.x = x
+        self.y = y
+        self.HP = 100
+        self.MP = 100
+        self.weapons = [woodenStick]
+        self.weaponEquipped = woodenStick
+        self.gold = 0
+    def addWeapon(weapon):
+        self.weapons.append(weapon)
+    def goldChange(changeOfGold):
+        self.gold += changeOfGold
+    def changeHP(HPChange):
+        if HPChange == toFull:
+            self.HP = 100
+        else:
+            self.HP += HPChange
+    
 
 #Defines the monster animation and attack
 class MonsterClass:
@@ -60,9 +83,11 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, HP=100, mana=100):
+    def __init__(self, x=0, y=0, HP=100, mana=100, image=image):
         self.x = x
         self.y = y
+        #Sets the image to use for the animation
+        self.image = image
     #the moving of the spell picture - animation
     def moveAnimation(self, m=200, mx=20, my=20):
         self.max = m
@@ -113,5 +138,28 @@ crystalStaff= {
 
 
 #Some players values we dont know what to do with
-        self.HP = HP
-        self.mana = mana
+        #self.HP = HP
+        #self.mana = mana
+
+#Sets variable to make the loop ask for a slot to load before anything else
+startOfGame = True
+
+#Sets run to True, so the eternity loop, which Pygame is, can run as long as you want.
+run = True
+while run:
+#Gets the value of the keys pressed
+    keys = pygame.key.get_pressed()
+    #Thoughts on how to load game upon pressing "start"
+    while startOfGame:
+        pygame.display.update()
+        pygame.time.delay(20)
+        slot1Handler = open("slot1.txt", "r")
+        slot2Handler = open("slot2.txt", "r")
+        slot3Handler = open("slot3.txt", "r")
+
+#Renders the image
+    pygame.display.update()
+    pygame.time.delay(20)
+    
+
+    
