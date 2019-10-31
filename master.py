@@ -4,12 +4,21 @@ import random
 #Initiate Pygame and fonts (text to screen)
 pygame.init()
 pygame.font.init()
+win = pygame.display.set_mode((1100, 600))
 
 #Sets a font, to use for damage text
 DMGFont = pygame.font.Font('freesansbold.ttf', 40)
 
+woodenStick = {
+    "spellDMG": 5,
+    "critChance": 10,
+    "attack": 5,
+    "spellPower": 0,
+    "armor": 0,
+}
+
 #Import images
-sumfin = pygame.image.load("")
+loading = pygame.image.load("loading.png")
 
 playerDict = {
     "healthpoints": 100,
@@ -20,7 +29,7 @@ playerDict = {
     #"xp": 0
 }
 class PlayerClass:
-    def __init__(self, image=wizard, x=300, y=300):
+    def __init__(self, image, x=300, y=300):
         self.image = image
         self.x = x
         self.y = y
@@ -44,7 +53,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image, x=600, y=300, maxX = 440, startingPos=600):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, startingPos=600):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -84,7 +93,7 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, HP=100, mana=100, image=image):
+    def __init__(self, x=0, y=0, HP=100, mana=100, image=loading):
         self.x = x
         self.y = y
         #Sets the image to use for the animation
@@ -115,13 +124,6 @@ class SpellClass:
         return int(dmg - armorPrevail)
 
 #Defines the weapons to use
-woodenStick = {
-    "spellDMG": 5,
-    "critChance": 10,
-    "attack": 5,
-    "spellPower": 0,
-    "armor": 0,
-}
 broadSword = {
     "spellDMG": 2,
     "critChance": 20,
@@ -143,7 +145,7 @@ crystalStaff= {
         #self.mana = mana
 
 #Sets variable to make the loop ask for a slot to load before anything else
-startOfGame = True
+scene = "startOfGame"
 
 #Sets run to True, so the eternity loop, which Pygame is, can run as long as you want.
 run = True
@@ -155,31 +157,79 @@ while run:
 #Gets location of mouse
     mouseL = pygame.mouse.get_pos()
     #Thoughts on how to load game upon pressing "start"
-    while startOfGame:
+    while scene == "startOfGame":
         pygame.display.update()
         pygame.time.delay(20)
+        win.blit(loading, (0,0))
 #Goes through all the event that happens (with the mouse)
         for event in pygame.event.get():
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
-#If the mouse is in this range:
-                if mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+#If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y):
+                if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
+#If you click slot1, it will load slot1
                     FileHandler = open("slot1.txt", "r")
-                elif mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+                elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
                     FileHandler = open("slot2.txt", "r")
-                elif mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+                elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
                     FileHandler = open("slot3.txt", "r")
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
                     continue
+#Sets an array to put in the output from the filehandler
+                outputFromSlot = []
+#Reads the lines in the file
                 theLines = FileHandler.readlines()
-                for lines in theLines:
-                    
+#Goes through the lines, and put them into the array
+                for line in theLines:
+                    outputFromSlot.append(line)
+#Closes the filehandler, since we do not need it anymore, since we have the values in a local array
+                FileHandler.close()
+#Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
+                #player = PlayerClass(dsadsadsa)
+                playerDict["healthpoints"] = outputFromSlot[0]
+                playerDict["manapoints"] = outputFromSlot[1]
+                playerDict["weapons"] = outputFromSlot[2]
+                playerDict["equippedWeapon"] = outputFromSlot[3]
+                playerDict["gold"] = outputFromSlot[4]
+                print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
+#Changes scene, so the while-loop exits
+                scene = "town"
+
+    #Need something to trigger this thing, but it will write to the file selected
+    while scene == "saveGame":
+        pygame.display.update()
+        pygame.time.delay(20)
+        for event in pygame.event.get():
+#After you click, and release your finger from the left-click, do:
+            if event.type == pygame.MOUSEBUTTONUP:
+#If the mouse is in this range:
+                if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
+#If you click slot1, it will load slot1
+                    FileHandler = open("slot1.txt", "w")
+                elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
+                    FileHandler = open("slot2.txt", "w")
+                elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
+                    FileHandler = open("slot3.txt", "w")
+#If you do not select a slot, it does nothing, and continues to the top of the loop
+                else:
+                    continue
+                FileHandler.write(playerDict["healthpoints"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["manapoints"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["weapons"])
+                FileHandler.write("\n") 
+                FileHandler.write(playerDict["equippedWeapon"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["gold"])
+                FileHandler.close()
+                scene = "town"                   
 
 
 #Renders the image
-    pygame.display.update()
-    pygame.time.delay(20)
+    #pygame.display.update()
+    #pygame.time.delay(20)
     
 
     
