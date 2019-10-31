@@ -15,6 +15,7 @@ playerDict = {
     "healthpoints": 100,
     "manapoints": 100,
     "weapons": [woodenStick],
+    "equippedWeapon": woodenStick,
     "gold": 0
     #"xp": 0
 }
@@ -149,13 +150,32 @@ run = True
 while run:
 #Gets the value of the keys pressed
     keys = pygame.key.get_pressed()
+#Gets the state of the mouse
+    mouseC = pygame.mouse.get_pressed()
+#Gets location of mouse
+    mouseL = pygame.mouse.get_pos()
     #Thoughts on how to load game upon pressing "start"
     while startOfGame:
         pygame.display.update()
         pygame.time.delay(20)
-        slot1Handler = open("slot1.txt", "r")
-        slot2Handler = open("slot2.txt", "r")
-        slot3Handler = open("slot3.txt", "r")
+#Goes through all the event that happens (with the mouse)
+        for event in pygame.event.get():
+#After you click, and release your finger from the left-click, do:
+            if event.type == pygame.MOUSEBUTTONUP:
+#If the mouse is in this range:
+                if mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+                    FileHandler = open("slot1.txt", "r")
+                elif mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+                    FileHandler = open("slot2.txt", "r")
+                elif mouseL[0] in range(X,X) and mouseL[1] in range (Y,Y):
+                    FileHandler = open("slot3.txt", "r")
+#If you do not select a slot, it does nothing, and continues to the top of the loop
+                else:
+                    continue
+                theLines = FileHandler.readlines()
+                for lines in theLines:
+                    
+
 
 #Renders the image
     pygame.display.update()
