@@ -158,8 +158,12 @@ while run:
     mouseL = pygame.mouse.get_pos()
     #Thoughts on how to load game upon pressing "start"
     while scene == "startOfGame":
+        #This function is sort of like the sync() function we learned while talking about reading and writing to files in python
+        #It basiclly forces the update to happen, which is often what is required in pygame to make something happen
         pygame.display.update()
+        #This function is used to speed up or slow down the program to you wishes, it takes the paramter milliseconds
         pygame.time.delay(20)
+        #win.blit is the function which we use to draw everything you see on the screen; like background, characters, text and even animations
         win.blit(loading, (0,0))
 #Goes through all the event that happens (with the mouse)
         for event in pygame.event.get():
@@ -180,7 +184,7 @@ while run:
                 outputFromSlot = []
 #Reads the lines in the file
                 theLines = FileHandler.readlines()
-#Goes through the lines, and put them into the array
+#Goes through the lines, and put them into the array named outputFromSlot
                 for line in theLines:
                     outputFromSlot.append(line)
 #Closes the filehandler, since we do not need it anymore, since we have the values in a local array
