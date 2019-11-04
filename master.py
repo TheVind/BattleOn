@@ -18,8 +18,11 @@ woodenStick = {
 }
 
 #Import images
+#imports our loading screen, kinda scuffed - needs to be changed
 loading = pygame.image.load("loading.png")
-
+#Town image imported
+townImage = pygame.image.load("bgtown.jpg")
+#The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
     "manapoints": 100,
@@ -170,12 +173,13 @@ while run:
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
 #If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y):
-                if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
+#Changed every mouseL variable to pymgae.mouse.get_pos() it worked flawlessly - Andreas
+                if pygame.mouse.get_pos()[0] in range(100,250) and pygame.mouse.get_pos()[1] in range (200,350):
 #If you click slot1, it will load slot1
                     FileHandler = open("slot1.txt", "r")
-                elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
+                elif pygame.mouse.get_pos()[0] in range(400,550) and pygame.mouse.get_pos()[1] in range (200,350):
                     FileHandler = open("slot2.txt", "r")
-                elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
+                elif pygame.mouse.get_pos()[0] in range(700,850) and pygame.mouse.get_pos()[1] in range (200,350):
                     FileHandler = open("slot3.txt", "r")
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
@@ -229,7 +233,12 @@ while run:
                 FileHandler.write(playerDict["gold"])
                 FileHandler.close()
                 scene = "town"                   
-
+    
+    
+    while scene == "town":
+        win.blit(townImage, (0,0))
+        pygame.time.delay(20)
+        pygame.display.update()
 
 #Renders the image
     #pygame.display.update()
