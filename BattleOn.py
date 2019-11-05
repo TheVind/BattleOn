@@ -1,220 +1,255 @@
 import pygame
 import random
 
+#Initiate Pygame and fonts (text to screen)
 pygame.init()
 pygame.font.init()
-font = pygame.font.Font('freesansbold.ttf', 16)
-DMGFont = pygame.font.Font('freesansbold.ttf', 40)
-lightAni = False
-fireAni = False
-icebAni = False
-dmgonce = False
-shDMGText = False
-canAttack = True
-armor = 0
-monsterTimer = 20
 win = pygame.display.set_mode((1100, 600))
-pygame.display.set_caption("BattleOn")
-lightY = -500
-mandX = 25
-mandY = 25
-shMonster = True
-dmg = 0
-yourTurn = True
-shCritText = 0
-dmgString = ""
-shDMGText2 = False
-shTimer = 41
-fireX = -300
-critchance = 1
-fireY = -500
-monsterHP = 100
-manaStart = 100
-HPStart = 100
-monsterAttack = False
-monsterPause = 100
-critText = False
-icebY = 1000
-monster = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/monster.png")
-desert = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/desert.jpg")
-mand = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/mand.png")
-svaerd = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/svaerd.png")
-lightning = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/lightning.png")
-fireball = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/fireball.png")
-wizard = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/wizard.png")
-iceb = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/iceb.png")
-roundStart = True
+
+#Sets a font, to use for damage text
+DMGFont = pygame.font.Font('freesansbold.ttf', 40)
+
+woodenStick = {
+    "spellDMG": 5,
+    "critChance": 10,
+    "attack": 5,
+    "spellPower": 0,
+    "armor": 0,
+}
+
+#Import images
+#imports our loading screen, kinda scuffed - needs to be changed
+loading = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/loadingScreen.jpg")
+#Town image imported
+townImage = pygame.image.load("/Users/antonwanlop/Desktop/battleongame/battleon/bgtown.jpg")
+#The player dictionary - the stats of our player + weapon and gold count.
+playerDict = {
+    "healthpoints": 100,
+    "manapoints": 100,
+    "weapons": [woodenStick],
+    "equippedWeapon": woodenStick,
+    "gold": 0
+    #"xp": 0
+}
+class PlayerClass:
+    def __init__(self, image, x=300, y=300):
+        self.image = image
+        self.x = x
+        self.y = y
+        self.HP = 100
+        self.MP = 100
+        self.weapons = [woodenStick]
+        self.weaponEquipped = woodenStick
+        self.gold = 0
+    def addWeapon(weapon):
+        self.weapons.append(weapon)
+    def goldChange(changeOfGold):
+        self.gold += changeOfGold
+    def changeHP(HPChange):
+        if HPChange == toFull:
+            self.HP = 100
+        else:
+            self.HP += HPChange
+    
+
+#Defines the monster animation and attack
+class MonsterClass:
+#the init function defining all the default values when you first call it
+#This functions holds all the paramteres we need the monster to have
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, startingPos=600):
+        self.image = image
+        #Image position for the x coordinate in pygame
+        self.x = x
+        #image position for the y coordinate in pygame
+        self.y = y
+        #variable to determine, which way the monster need to move, depeding on position of the x coordinate
+        self.moveBack = False
+        #Dmg number to pop up on screen - in testing
+        self.damage = 0
+        #The x starting position for the monster
+        self.startingPosition = startingPos
+        #The threshold to which the monster can't move anymore, so it doesnt stand on top of player
+        self.maxXPosition = maxX
+
+    def moveAnimation(self, mx=20, my=0, startingPosi=600):
+        if self.moveBack:
+            self.x += mx
+        elif self.x < self.maxXPosition:
+            self.x += mx
+            self.moveBack = True
+        else:
+            self.x -= mx
+        if self.x > self.startingPosition:
+            self.damage = 0
+            self.moveBack = False
+            self.x = startingPosi
+    #Monster dmg function to determine dmg and crit
+    def dealDamage(self, dmgMulti=1, d=2, critCh=0, a=0):
+        #the dmg calulation it self
+        dmg = random.randint(((8-d)*dmgMulti),((8+d)*dmgMulti))
+        #the calculation of the crit chance - default is set so the monster cannot crit - further explained in the spell class
+        getCritChance = random.randint(1,10)
+        if (critCh/10) >= getCritChance:
+            dmg = dmg*2
+        armorGain = (a/100)*dmg
+        return int(dmg - armorGain)
+
+#Class for the player, both dealing damage and animating
+class SpellClass:
+    def __init__(self, x=0, y=0, HP=100, mana=100, image=loading):
+        self.x = x
+        self.y = y
+        #Sets the image to use for the animation
+        self.image = image
+    #the moving of the spell picture - animation
+    def moveAnimation(self, m=200, mx=20, my=20):
+        self.max = m
+        self.x += mx
+        self.y += my
+    
+    def gainMana(self, mana, gain):
+        return (mana+gain)
+
+    def dealDamage(self, dmgMulti=2, difference=1, critCh=10, a=0, sp=0):
+        dmg = random.randint(((5-difference)*dmgMulti),((5+difference)*dmgMulti))
+        #Variable to generate chance to crit - random number between 1 and 10
+        getCritChance = random.randint(1,10)
+        #Checking for crit dynamically
+        if (critCh/10) >= getCritChance:
+            #the actual bonus dmg calculation
+            dmg = dmg*2
+        #Add dmg to your attack depending on the amount of spellpower your weapon has
+        spellPowerGain = (sp/100)*dmg
+        dmg = dmg + spellPowerGain
+        #Takes the armor of the monster, and finds out how much damage the armor absorbs
+        armorPrevail = (a/100)*dmg
+        #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
+        return int(dmg - armorPrevail)
+
+#Defines the weapons to use
+broadSword = {
+    "spellDMG": 2,
+    "critChance": 20,
+    "attack": 10,
+    "spellPower": 0,
+    "armor": 5
+}
+crystalStaff= {
+    "spellDMG": 20,
+    "critChance": 10,
+    "attack": 5,
+    "spellPower": 10,
+    "armor": 0
+}
+
+
+#Some players values we dont know what to do with
+        #self.HP = HP
+        #self.mana = mana
+
+#Sets variable to make the loop ask for a slot to load before anything else
+scene = "startOfGame"
+
+#Sets run to True, so the eternity loop, which Pygame is, can run as long as you want.
 run = True
 while run:
-    if roundStart:
-        HP = HPStart
-        mana = manaStart
-        roundStart = False 
-    #if monsterHP < 1 or HP < 1:
-        #
-    if mana < 2 and canAttack == True:
-        yourTurn = False
-    fireDMG = False
-    lightDMG = False
-    icebDMG = False
-    critText = False
-    pygame.time.delay(20)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    pygame.display.update()
+#Gets the value of the keys pressed
     keys = pygame.key.get_pressed()
-    win.blit(desert, (0,0))
-    monsterHPT = str(monsterHP)
-    text19 = font.render(monsterHPT, True, (255,0,0))
-    textRect19 = text19.get_rect()
-    textRect19.center = (750, 260)
-    if monsterHP > 0:
-        if shMonster:
-            win.blit(monster, (600,300))
-        monsterHPBAR = pygame.draw.rect(win, (0,128,0), (650,250,(monsterHP*2),50))
-        win.blit(text19, textRect19)
-    manaT = str(mana)
-    HPT = str(HP)
-    if HP > 0:
-        win.blit(wizard, (70,300))
-    manaText = font.render(manaT, True, (255,0,0))
-    HPText = font.render(HPT, True, (255,0,0))
-    textRectMana = manaText.get_rect()
-    textRectHP = HPText.get_rect()
-    textRectMana.center = (250, 310)
-    textRectHP.center = (250,260)
-    if mana > 0:
-        manaBAR = pygame.draw.rect(win, (0,0,255), (150,300,(200*(mana/manaStart)),50))
-    if HP > 0:
-        HPBAR = pygame.draw.rect(win, (0,128,0), (150,250,(200*(HP/HPStart)),50))
-    win.blit(manaText, textRectMana)
-    win.blit(HPText, textRectHP)
-    #win.blit(mand, (mandX,mandY))
-    #win.blit(svaerd, (svaerdX,svaerdY))
-    if lightAni:
-        win.blit(lightning, (400,lightY))
-        if lightY < -100:
-            lightY += 10
-        if lightY >= -100:
-            lightAni = False
-            lightY = -500
-    if icebAni:
-        win.blit(iceb, (-200, icebY))
-        if icebY > 100:
-            icebY -= 20
-        if icebY <= 100:
-            icebAni = False
-            icebY = 1000
-        textIceb = font.render("+7 armor", True, (255,0,0))
-        textRectIceb = textIceb.get_rect()
-        textRectIceb.center = (250, 150)
-        win.blit(textIceb, textRectIceb)
-    if fireAni:
-        win.blit(fireball, (fireX,fireY))
-        if fireY < 200:
-            fireY += 20
-            fireX += 20
-        if fireY >= 200:
-            fireAni = False
-            fireY = -500
-            fireX = -300
-    if mana >= 2 and yourTurn and canAttack:
-        if keys[pygame.K_l]:
-            lightAni = True
-            lightDMG = True
-            yourTurn = False
-    if mana >= 10 and yourTurn and canAttack:
-        if keys[pygame.K_i]:
-            icebAni = True
-            icebDMG = True
-            yourTurn = False
-    if mana >= 13 and yourTurn and canAttack:
-        if keys[pygame.K_f]:
-            fireAni = True
-            fireDMG = True
-            yourTurn = False
-    if fireDMG and dmgonce == False:
-        dmg = random.randint(8,12)
-        mana -= 13
-        crit = random.randint(1,10)
-        if critchance >= crit:
-            dmg = (dmg*2) 
-            critText = True
-        monsterHP -= dmg
-        dmgonce = True
-        shDMGText = True
-    if icebDMG and dmgonce == False:
-        armor += 7
-        mana -= 10
-        dmgonce = True
-    if lightDMG and dmgonce == False:
-        dmg = random.randint(4,6)
-        mana -= 2
-        crit = random.randint(1,10)
-        if critchance >= crit:
-            dmg = (dmg*2)
-            critText = True
-        monsterHP -= dmg
-        dmgonce = True
-        shDMGText = True
-    if not lightDMG and not fireDMG and not icebDMG and dmgonce:
-        dmgonce = False
-        shDMGText = False
-    if shDMGText:
-        dmgString = str(dmg)
-        if critText:
-            dmgString = "CRIT! " + dmgString
-        shDMGText = False
-        shDMGText2 = True
-    if shDMGText2:
-        shTimer = 0
-        shDMGText2 = False
-    if shTimer <= 40:    
-        dmgText = DMGFont.render(dmgString, True, (255,0,0))
-        textRectDMG = dmgText.get_rect()
-        textRectDMG.center = (900, 150)
-        win.blit(dmgText, textRectDMG)
-        shTimer += 1
-    if yourTurn == False:
-        canAttack = False
-        monsterAttack = True
-        yourTurn = True
-        monsterPause = 0
-        monsterTimer = 0
-    if monsterAttack and monsterHP > 0:
-        if monsterPause > 50:
-            shMonster = False
-            if monsterTimer == 0 or monsterTimer == 20:
-                win.blit(monster, (600,300))
-            if monsterTimer == 1 or monsterTimer == 19:
-                win.blit(monster, (580,300))
-            if monsterTimer == 2 or monsterTimer == 18:
-                win.blit(monster, (560,300))
-            if monsterTimer == 3 or monsterTimer == 17:
-                win.blit(monster, (540,300))
-            if monsterTimer == 4 or monsterTimer == 16:
-                win.blit(monster, (520,300))
-            if monsterTimer == 5 or monsterTimer == 15:
-                win.blit(monster, (500,300))
-            if monsterTimer == 6 or monsterTimer == 14:
-                win.blit(monster, (480,300))
-            if monsterTimer == 7 or monsterTimer == 13:
-                win.blit(monster, (460,300))
-            if monsterTimer == 8 or monsterTimer == 12:
-                win.blit(monster, (440,300))
-            if monsterTimer == 9 or monsterTimer == 10:
-                win.blit(monster, (420,300))
-            if monsterTimer == 9:
-                dmg = random.randint(6,10)
-                dmg = int((dmg*((100-armor)/100)))
-                HP -= dmg
-                shDMGText = True
-            if monsterTimer > 20:
-                monsterAttack = False
-                shMonster = True
-                yourTurn = True
-                canAttack = True
-            monsterTimer += 1
-        monsterPause += 1
-pygame.quit()
+#Gets the state of the mouse - useless for now
+    mouseC = pygame.mouse.get_pressed()
+#Gets location of mouse - useless for now? not sure why it doesnt work
+    mouseL = pygame.mouse.get_pos()
+    #Thoughts on how to load game upon pressing "start"
+    while scene == "startOfGame":
+        #This function is sort of like the sync() function we learned while talking about reading and writing to files in python
+        #It basiclly forces the update to happen, which is often what is required in pygame to make something happen
+        pygame.display.update()
+        #This function is used to speed up or slow down the program to you wishes, it takes the paramter milliseconds
+        pygame.time.delay(20)
+        #win.blit is the function which we use to draw everything you see on the screen; like background, characters, text and even animations
+        win.blit(loading, (0,0))
+#Goes through all the event that happens (with the mouse)
+        for event in pygame.event.get():
+#After you click, and release your finger from the left-click, do:
+            if event.type == pygame.MOUSEBUTTONUP:
+#If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y) - CHANGE COMMENT:
+#Changed every mouseL variable to pymgae.mouse.get_pos() it worked flawlessly - Andreas
+                if pygame.mouse.get_pos()[0] in range(100,250) and pygame.mouse.get_pos()[1] in range (200,350):
+#If you click slot1, it will load slot1
+                    FileHandler = open("slot1.txt", "r")
+                elif pygame.mouse.get_pos()[0] in range(400,550) and pygame.mouse.get_pos()[1] in range (200,350):
+                    FileHandler = open("slot2.txt", "r")
+                elif pygame.mouse.get_pos()[0] in range(700,850) and pygame.mouse.get_pos()[1] in range (200,350):
+                    FileHandler = open("slot3.txt", "r")
+#If you do not select a slot, it does nothing, and continues to the top of the loop
+                else:
+                    continue
+#Sets an array to put in the output from the filehandler
+                outputFromSlot = []
+#Reads the lines in the file
+                theLines = FileHandler.readlines()
+#Goes through the lines, and put them into the array named outputFromSlot
+                for line in theLines:
+                    outputFromSlot.append(line)
+#Closes the filehandler, since we do not need it anymore, since we have the values in a local array
+                FileHandler.close()
+#Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
+                #player = PlayerClass(dsadsadsa)
+                playerDict["healthpoints"] = outputFromSlot[0]
+                playerDict["manapoints"] = outputFromSlot[1]
+                playerDict["weapons"] = outputFromSlot[2]
+                playerDict["equippedWeapon"] = outputFromSlot[3]
+                playerDict["gold"] = outputFromSlot[4]
+                print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
+#Changes scene to town, so the while-loop exits
+                scene = "town"
+
+    #Need something to trigger this thing, but it will write to the file selected
+    while scene == "saveGame":
+        pygame.display.update()
+        pygame.time.delay(20)
+        for event in pygame.event.get():
+#After you click, and release your finger from the left-click, do:
+            if event.type == pygame.MOUSEBUTTONUP:
+#If the mouse is in this range:
+                if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
+#If you click slot1, it will load slot1
+                    FileHandler = open("slot1.txt", "w")
+                elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
+                    FileHandler = open("slot2.txt", "w")
+                elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
+                    FileHandler = open("slot3.txt", "w")
+#If you do not select a slot, it does nothing, and continues to the top of the loop
+                else:
+                    continue
+                FileHandler.write(playerDict["healthpoints"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["manapoints"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["weapons"])
+                FileHandler.write("\n") 
+                FileHandler.write(playerDict["equippedWeapon"])
+                FileHandler.write("\n")
+                FileHandler.write(playerDict["gold"])
+                FileHandler.close()
+                #This is the way we change scene from loading to the town scene
+                scene = "town"                   
+    
+    
+    while scene == "town":
+        win.blit(townImage, (0,0))
+        pygame.time.delay(20)
+        pygame.draw.rect(win, (255,0,0), (300, 300, 100, 100))
+        pygame.display.update()
+        
+
+
+
+
+
+#Renders the image
+    #pygame.display.update()
+    #pygame.time.delay(20)
+    
+
+    
