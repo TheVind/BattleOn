@@ -21,7 +21,7 @@ woodenStick = {
 #imports our loading screen, kinda scuffed - needs to be changed
 loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
-townImage = pygame.image.load("bgtown.jpg")
+townImage = pygame.image.load("bgtownFinal.jpg")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -155,9 +155,9 @@ run = True
 while run:
 #Gets the value of the keys pressed
     keys = pygame.key.get_pressed()
-#Gets the state of the mouse
+#Gets the state of the mouse - useless for now
     mouseC = pygame.mouse.get_pressed()
-#Gets location of mouse
+#Gets location of mouse - useless for now? not sure why it doesnt work
     mouseL = pygame.mouse.get_pos()
     #Thoughts on how to load game upon pressing "start"
     while scene == "startOfGame":
@@ -172,7 +172,7 @@ while run:
         for event in pygame.event.get():
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
-#If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y):
+#If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y) - CHANGE COMMENT:
 #Changed every mouseL variable to pymgae.mouse.get_pos() it worked flawlessly - Andreas
                 if pygame.mouse.get_pos()[0] in range(100,250) and pygame.mouse.get_pos()[1] in range (200,350):
 #If you click slot1, it will load slot1
@@ -201,7 +201,7 @@ while run:
                 playerDict["equippedWeapon"] = outputFromSlot[3]
                 playerDict["gold"] = outputFromSlot[4]
                 print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
-#Changes scene, so the while-loop exits
+#Changes scene to town, so the while-loop exits
                 scene = "town"
 
     #Need something to trigger this thing, but it will write to the file selected
@@ -232,13 +232,20 @@ while run:
                 FileHandler.write("\n")
                 FileHandler.write(playerDict["gold"])
                 FileHandler.close()
+                #This is the way we change scene from loading to the town scene
                 scene = "town"                   
     
     
     while scene == "town":
         win.blit(townImage, (0,0))
         pygame.time.delay(20)
+        pygame.draw.rect(win, (255,0,0), (300, 300, 100, 100))
         pygame.display.update()
+        
+
+
+
+
 
 #Renders the image
     #pygame.display.update()
