@@ -19,7 +19,7 @@ woodenStick = {
 
 #Import images
 #imports our loading screen, kinda scuffed - needs to be changed
-loading = pygame.image.load("loading.png")
+loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
 townImage = pygame.image.load("bgtown.jpg")
 #The player dictionary - the stats of our player + weapon and gold count.
