@@ -8,6 +8,7 @@ win = pygame.display.set_mode((1100, 600))
 
 #Sets a font, to use for damage text
 DMGFont = pygame.font.Font('freesansbold.ttf', 40)
+font = pygame.font.Font('freesansbold.ttf', 16)
 
 woodenStick = {
     "spellDMG": 5,
@@ -31,6 +32,8 @@ battlebg = pygame.image.load("forest.jpg")
 #Gets scuffed button
 battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
+#Gets the wizard image
+wizard = pygame.image.load("wizard.png")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -41,22 +44,24 @@ playerDict = {
     #"xp": 0
 }
 class PlayerClass:
-    def __init__(self, image, x=300, y=300):
+    def __init__(self, image, x=300, y=300, hp=100, mana=100, weapons=[woodenStick], equipped=woodenStick, gold=0):
         self.image = image
         self.x = x
         self.y = y
-        self.HP = 100
-        self.MP = 100
-        self.weapons = [woodenStick]
-        self.weaponEquipped = woodenStick
-        self.gold = 0
+        self.startHP = int(hp)
+        self.startMP = int(mana)
+        self.HP = int(hp)
+        self.MP = int(mana)
+        self.weapons = weapons
+        self.weaponEquipped = equipped
+        self.gold = int(gold)
     def addWeapon(weapon):
         self.weapons.append(weapon)
     def goldChange(changeOfGold):
         self.gold += changeOfGold
     def changeHP(HPChange):
         if HPChange == toFull:
-            self.HP = 100
+            self.HP = self.startHP
         else:
             self.HP += HPChange
     
@@ -151,7 +156,6 @@ crystalStaff= {
     "armor": 0
 }
 
-
 #Some players values we dont know what to do with
         #self.HP = HP
         #self.mana = mana
@@ -218,6 +222,8 @@ while run:
                 playerDict["equippedWeapon"] = outputFromSlot[3]
                 playerDict["gold"] = outputFromSlot[4]
                 print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
+#Sets the class of the player
+                Player = PlayerClass(wizard, 70, 300, outputFromSlot[0], outputFromSlot[1], outputFromSlot[2], outputFromSlot[3], outputFromSlot[4])
 #Changes scene to town, so the while-loop exits
                 scene = "town"
 
@@ -284,8 +290,13 @@ while run:
                     scene = "battle"
                 else:
                     continue
+
+#Loads the variables before battle
+    if scene == "battle":
+        scene = "battleScene"
+
 #The battle scene! - not much going on atm tho
-    while scene == "battle":
+    while scene == "battleScene":
         pygame.time.delay(20)
         pygame.display.update()
         for event in pygame.event.get():
@@ -293,6 +304,22 @@ while run:
                 run = False
                 scene = "exit"
         win.blit(battlebg, (0,0))
+        win.blit(Player.image, (Player.x,Player.y))
+        #manaText = font.render(str(Player.MP), True, (255,255,255))
+        #HPText = font.render(str(Player.HP), True, (255,255,255))
+        textRectMana = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
+        textRectHP = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
+        textRectMana.center = (250, 310)
+        textRectHP.center = (250,260)
+        HPBAR = pygame.draw.rect(win, (0,128,0), (150,250,(200*(Player.HP/Player.startHP)),50))
+        manaBAR = pygame.draw.rect(win, (0,0,255), (150,300,(200*(Player.MP/Player.startMP)),50))
+        #win.blit(HPText, textRectHP)
+        #win.blit(manaText, textRectMana)
+        if Player.MP > 0:
+            win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
+        if Player.HP > 0:
+            win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
+
 
 pygame.quit()
     
