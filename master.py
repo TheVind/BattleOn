@@ -175,6 +175,9 @@ while run:
         win.blit(loading, (0,0))
 #Goes through all the event that happens (with the mouse)
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                scene = "exit"
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
                 #Gets location of mouse - useless for now? not sure why it doesnt work
@@ -219,6 +222,9 @@ while run:
         pygame.time.delay(20)
         win.blit(savedScreen,(0,0))
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                scene = "exit"
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
 #Gets location of mouse - useless for now? not sure why it doesnt work
@@ -256,6 +262,9 @@ while run:
         #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
         win.blit(scuffedButton, (50,350))
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                scene = "exit"
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
                 if pygame.mouse.get_pos()[0] in range(50,200) and pygame.mouse.get_pos()[1] in range (350,390):
@@ -265,7 +274,7 @@ while run:
     continue
 
 
-
+pygame.quit()
 
 #Renders the image
     #pygame.display.update()
