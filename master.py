@@ -62,7 +62,7 @@ class PlayerClass:
     def goldChange(changeOfGold):
         self.gold += changeOfGold
     def changeHP(HPChange):
-        if HPChange == toFull:
+        if HPChange == "toFull":
             self.HP = self.startHP
         else:
             self.HP += HPChange
@@ -93,12 +93,15 @@ class MonsterClass:
         elif self.x < self.maxXPosition:
             self.x += mx
             self.moveBack = True
+            return "attack"
         else:
             self.x -= mx
         if self.x > self.startingPosition:
             self.damage = 0
             self.moveBack = False
             self.x = startingPosi
+            return "end"
+        return False
     #Monster dmg function to determine dmg and crit
     def dealDamage(self, dmgMulti=1, d=2, critCh=0, a=0):
         #the dmg calulation it self
@@ -300,6 +303,9 @@ while run:
 #Sets some variables for the fighting scene
         yourTurn = True
         canAttack = True
+#Sets the weapon
+        if Player.weaponEquipped == "woodenStick":
+            weapon = woodenStick
 #Shifts to the battle scene
         scene = "battleScene"
 
@@ -328,16 +334,17 @@ while run:
         HPBAR = pygame.draw.rect(win, (0,128,0), (150,250,(200*(Player.HP/Player.startHP)),50))
         #Draws the mana bar
         manaBAR = pygame.draw.rect(win, (0,0,255), (150,300,(200*(Player.MP/Player.startMP)),50))
-        #If the player still have any mana, it writes how much mana the player has inside the mana bar
-        if Player.MP > 0:
-            win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
-        #Same as with mana, but for HP
-        if Player.HP > 0:
-            win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
+        win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
+        win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
         if canAttack:
             win.blit(Monster.image,(Monster.x,Monster.y))
         else:
-            Monster.moveAnimation(20,0,Monster.startingPosition)
+            state = Monster.moveAnimation(20,0,Monster.startingPosition)
+            if state == "end":
+                canAttack = True
+            elif state == "attack":
+                DMG = Monster.dealDamage(1,2,0,weapon["armor"])
+                Player.HP -= DMG
             win.blit(Monster.image,(Monster.x,Monster.y))
 
 
