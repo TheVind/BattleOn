@@ -45,8 +45,12 @@ playerDict = {
     "gold": 0
     #"xp": 0
 }
+
+#THIS SECTION NEEDS COMMENTS
 class PlayerClass:
+
     def __init__(self, image, x=300, y=300, hp=100, mana=100, weapons=[woodenStick], equipped=woodenStick, gold=0):
+        #having this paramter makes us able to swap character model
         self.image = image
         self.x = x
         self.y = y
@@ -56,11 +60,15 @@ class PlayerClass:
         self.MP = int(mana)
         self.weapons = weapons
         self.weaponEquipped = equipped
+        #Parameter to gain/lose gold to get new weapon 
         self.gold = int(gold)
+
     def addWeapon(weapon):
         self.weapons.append(weapon)
+
     def goldChange(changeOfGold):
         self.gold += changeOfGold
+
     def changeHP(HPChange):
         if HPChange == "toFull":
             self.HP = self.startHP
@@ -87,12 +95,16 @@ class MonsterClass:
         #The threshold to which the monster can't move anymore, so it doesnt stand on top of player
         self.maxXPosition = maxX
 
+    #function that moves the monster on screen + gives feedback to indicate when monster is done attack/ready to attack
     def moveAnimation(self, mx=20, my=0, startingPosi=600):
+        #when variable moveBack = true add mx, which is 20px, to monsters x pos making it go backwards on the screen
         if self.moveBack:
             self.x += mx
+        #When monsters x variable gets lower than maxX variable set moveBack = True, which runs the code above
         elif self.x < self.maxXPosition:
             self.x += mx
             self.moveBack = True
+            #comment something
             return "attack"
         else:
             self.x -= mx
@@ -102,6 +114,7 @@ class MonsterClass:
             self.x = startingPosi
             return "end"
         return False
+
     #Monster dmg function to determine dmg and crit
     def dealDamage(self, dmgMulti=1, d=2, critCh=0, a=0):
         #the dmg calulation it self
@@ -187,6 +200,7 @@ while run:
         pygame.time.delay(20)
         #win.blit is the function which we use to draw everything you see on the screen; like background, characters, text and even animations
         win.blit(loading, (0,0))
+
 #Goes through all the event that happens (with the mouse)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -197,8 +211,6 @@ while run:
                 #Gets location of mouse - useless for now? not sure why it doesnt work
                 mouseL = pygame.mouse.get_pos()
 #If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y) - CHANGE COMMENT:
-#Changed every mouseL variable to pymgae.mouse.get_pos() it worked flawlessly - Andreas
-#Changed it back, since I found the flaw, and this should lower the workload by 83 % for this function!
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
                     FileHandler = open("slot1.txt", "r")
@@ -209,6 +221,7 @@ while run:
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
                     continue
+
 #Sets an array to put in the output from the filehandler
                 outputFromSlot = []
 #Reads the lines in the file
@@ -318,27 +331,33 @@ while run:
                 #run = False
                 #scene = "exit"
                 canAttack = False
+
         #Renders the background for the scene
         win.blit(battlebg, (0,0))
         #Renders the model for the player
         win.blit(Player.image, (Player.x,Player.y))
-        #Defines the text to show for the mana bar
+        #Defines the text to show inside the mana bar
         textRectMana = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
-        #Defines the text to show for the HP bar
+        #Defines the text to show inside the HP bar
         textRectHP = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
         #Defines the position of the mana bar
         textRectMana.center = (250, 310)
         #Defines the position of the HP bar
         textRectHP.center = (250,260)
-        #Draws the hp bar
-        HPBAR = pygame.draw.rect(win, (0,128,0), (150,250,(200*(Player.HP/Player.startHP)),50))
-        #Draws the mana bar
-        manaBAR = pygame.draw.rect(win, (0,0,255), (150,300,(200*(Player.MP/Player.startMP)),50))
+        #Draws the hp bar and makes it shorter in percentage as the player loses health
+        hpBar = pygame.draw.rect(win, (0,128,0), (150,250,(200*(Player.HP/Player.startHP)),50))
+        #Draws the mana bar and makes it shorter in percentage as the player uses mana
+        manaBar = pygame.draw.rect(win, (0,0,255), (150,300,(200*(Player.MP/Player.startMP)),50))
+        #NEED COMMENTS HERE
         win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
         win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
+        
+        #If statement to control the flow of the turn based combat
+        #making monster stand still when it's players turn to attack
         if canAttack:
             win.blit(Monster.image,(Monster.x,Monster.y))
         else:
+            #Getting feedback from our moveAnimation either "end" or "attack" depending on which value or monster.x has
             state = Monster.moveAnimation(20,0,Monster.startingPosition)
             if state == "end":
                 canAttack = True
