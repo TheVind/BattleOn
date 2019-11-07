@@ -153,6 +153,7 @@ scene = "startOfGame"
 #Sets run to True, so the eternity loop, which Pygame is, can run as long as you want.
 run = True
 while run:
+#The variables below are going to get repeated in the other loops, since we always need the state of mouse and keyboard
 #Gets the value of the keys pressed
     keys = pygame.key.get_pressed()
 #Gets the state of the mouse - useless for now
@@ -172,14 +173,17 @@ while run:
         for event in pygame.event.get():
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
+                #Gets location of mouse - useless for now? not sure why it doesnt work
+                mouseL = pygame.mouse.get_pos()
 #If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y) - CHANGE COMMENT:
 #Changed every mouseL variable to pymgae.mouse.get_pos() it worked flawlessly - Andreas
-                if pygame.mouse.get_pos()[0] in range(100,250) and pygame.mouse.get_pos()[1] in range (200,350):
+#Changed it back, since I found the flaw, and this should lower the workload by 83 % for this function!
+                if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
                     FileHandler = open("slot1.txt", "r")
-                elif pygame.mouse.get_pos()[0] in range(400,550) and pygame.mouse.get_pos()[1] in range (200,350):
+                elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
                     FileHandler = open("slot2.txt", "r")
-                elif pygame.mouse.get_pos()[0] in range(700,850) and pygame.mouse.get_pos()[1] in range (200,350):
+                elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
                     FileHandler = open("slot3.txt", "r")
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
@@ -190,7 +194,8 @@ while run:
                 theLines = FileHandler.readlines()
 #Goes through the lines, and put them into the array named outputFromSlot
                 for line in theLines:
-                    outputFromSlot.append(line)
+#Replaces "\n" with nothing, since this naturally occurs on the line, AND WE DONT WANT IT
+                    outputFromSlot.append(line.replace("\n", ""))
 #Closes the filehandler, since we do not need it anymore, since we have the values in a local array
                 FileHandler.close()
 #Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
@@ -211,6 +216,8 @@ while run:
         for event in pygame.event.get():
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
+#Gets location of mouse - useless for now? not sure why it doesnt work
+                mouseL = pygame.mouse.get_pos()
 #If the mouse is in this range:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
