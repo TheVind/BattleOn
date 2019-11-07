@@ -26,6 +26,11 @@ townImage = pygame.image.load("bgtownFinal.jpg")
 scuffedButton = pygame.image.load("saveGame.png")
 #Gets saving background screen
 savedScreen = pygame.image.load("saveScreen.jpg")
+#Gets the battle background
+battlebg = pygame.image.load("forest.jpg")
+#Gets scuffed button
+battleButton = pygame.image.load("battleB.png")
+battleButtonRed = pygame.image.load("battleBRed.png")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -257,27 +262,39 @@ while run:
     while scene == "town":
         pygame.time.delay(20)
         pygame.display.update()
+        mouseL = pygame.mouse.get_pos()
         win.blit(townImage, (0,0))
-        pygame.time.delay(20)
         #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
-        win.blit(scuffedButton, (50,350))
+        win.blit(scuffedButton, (850,350))
+        #Mouse over effect for the battle button (just for show)
+        if mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
+            win.blit(battleButtonRed, (50,350))
+        else:
+            win.blit(battleButton, (50,350))
+        #Function to quit the window
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 scene = "exit"
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
-                if pygame.mouse.get_pos()[0] in range(50,200) and pygame.mouse.get_pos()[1] in range (350,390):
+                if mouseL[0] in range(850,1000) and mouseL[1] in range(350,390):
                     scene = "saveGame"
+                elif mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
+                    scene = "battle"
                 else:
                     continue
-
+#The battle scene! - not much going on atm tho
+    while scene == "battle":
+        pygame.time.delay(20)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+                scene = "exit"
+        win.blit(battlebg, (0,0))
 
 pygame.quit()
-
-#Renders the image
-    #pygame.display.update()
-    #pygame.time.delay(20)
     
 
     
