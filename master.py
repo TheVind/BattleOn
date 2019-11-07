@@ -362,7 +362,8 @@ while run:
             if state == "end":
                 canAttack = True
             elif state == "attack":
-                Player.HP -= Monster.dealDamage(1,2,0,weapon["armor"])
+                DMG = Monster.dealDamage(1,2,0,weapon["armor"])
+                Player.HP -= DMG
             win.blit(Monster.image,(Monster.x,Monster.y))
 
 
