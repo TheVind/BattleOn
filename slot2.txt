@@ -2,4 +2,4 @@
 100
 [woodenStick]
 woodenStick
-100000002
+100000003

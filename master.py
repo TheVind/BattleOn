@@ -22,6 +22,10 @@ woodenStick = {
 loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
 townImage = pygame.image.load("bgtownFinal.jpg")
+#Button imported
+scuffedButton = pygame.image.load("saveGame.png")
+#Gets saving background screen
+savedScreen = pygame.image.load("saveScreen.jpg")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -213,6 +217,7 @@ while run:
     while scene == "saveGame":
         pygame.display.update()
         pygame.time.delay(20)
+        win.blit(savedScreen,(0,0))
         for event in pygame.event.get():
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
@@ -244,12 +249,20 @@ while run:
     
     
     while scene == "town":
+        pygame.time.delay(20)
+        pygame.display.update()
         win.blit(townImage, (0,0))
         pygame.time.delay(20)
-        pygame.draw.rect(win, (255,0,0), (300, 300, 100, 100))
-        pygame.display.update()
-        
-
+        #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
+        win.blit(scuffedButton, (50,350))
+        for event in pygame.event.get():
+#After you click, and release your finger from the left-click, do:
+            if event.type == pygame.MOUSEBUTTONUP:
+                if pygame.mouse.get_pos()[0] in range(50,200) and pygame.mouse.get_pos()[1] in range (350,390):
+                    scene = "saveGame"
+                else:
+                    continue
+    continue
 
 
 
