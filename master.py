@@ -34,6 +34,8 @@ battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
 #Gets the wizard image
 wizard = pygame.image.load("wizard.png")
+#Gets the monster
+monster = pygame.image.load("monster.png")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -70,7 +72,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440, startingPos=600):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -81,7 +83,7 @@ class MonsterClass:
         #Dmg number to pop up on screen - in testing
         self.damage = 0
         #The x starting position for the monster
-        self.startingPosition = startingPos
+        self.startingPosition = x
         #The threshold to which the monster can't move anymore, so it doesnt stand on top of player
         self.maxXPosition = maxX
 
@@ -293,6 +295,12 @@ while run:
 
 #Loads the variables before battle
     if scene == "battle":
+#Loads the monster
+        Monster = MonsterClass(monster, 800, 300, 440)
+#Sets some variables for the fighting scene
+        yourTurn = True
+        canAttack = True
+#Shifts to the battle scene
         scene = "battleScene"
 
 #The battle scene! - not much going on atm tho
@@ -301,24 +309,36 @@ while run:
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
-                scene = "exit"
+                #run = False
+                #scene = "exit"
+                canAttack = False
+        #Renders the background for the scene
         win.blit(battlebg, (0,0))
+        #Renders the model for the player
         win.blit(Player.image, (Player.x,Player.y))
-        #manaText = font.render(str(Player.MP), True, (255,255,255))
-        #HPText = font.render(str(Player.HP), True, (255,255,255))
+        #Defines the text to show for the mana bar
         textRectMana = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
+        #Defines the text to show for the HP bar
         textRectHP = (font.render(str(Player.MP), True, (255,255,255))).get_rect()
+        #Defines the position of the mana bar
         textRectMana.center = (250, 310)
+        #Defines the position of the HP bar
         textRectHP.center = (250,260)
+        #Draws the hp bar
         HPBAR = pygame.draw.rect(win, (0,128,0), (150,250,(200*(Player.HP/Player.startHP)),50))
+        #Draws the mana bar
         manaBAR = pygame.draw.rect(win, (0,0,255), (150,300,(200*(Player.MP/Player.startMP)),50))
-        #win.blit(HPText, textRectHP)
-        #win.blit(manaText, textRectMana)
+        #If the player still have any mana, it writes how much mana the player has inside the mana bar
         if Player.MP > 0:
             win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
+        #Same as with mana, but for HP
         if Player.HP > 0:
             win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
+        if canAttack:
+            win.blit(Monster.image,(Monster.x,Monster.y))
+        else:
+            Monster.moveAnimation(20,0,Monster.startingPosition)
+            win.blit(Monster.image,(Monster.x,Monster.y))
 
 
 pygame.quit()
