@@ -271,7 +271,6 @@ while run:
                     scene = "saveGame"
                 else:
                     continue
-    continue
 
 
 pygame.quit()
