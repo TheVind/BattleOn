@@ -390,6 +390,8 @@ while run:
                 DMG = Monster.dealDamage(1,2,0,weapon["armor"])
                 Player.HP -= DMG
                 if Player.HP <= 0:
+                    Player.HP = 0
+                    pygame.time.delay(1000)
                     win.blit(uDed,(0,0))
                     pygame.display.update()
                     pygame.time.delay(5000)
