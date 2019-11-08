@@ -11,6 +11,7 @@ DMGFont = pygame.font.Font('freesansbold.ttf', 40)
 font = pygame.font.Font('freesansbold.ttf', 16)
 
 woodenStick = {
+    "name": "woodenStick",
     "spellDMG": 5,
     "critChance": 10,
     "attack": 5,
@@ -160,6 +161,7 @@ class SpellClass:
 
 #Defines the weapons to use
 broadSword = {
+    "name": "broadSword",
     "spellDMG": 2,
     "critChance": 20,
     "attack": 10,
@@ -167,6 +169,7 @@ broadSword = {
     "armor": 5
 }
 crystalStaff= {
+    "name": "crystalStaff",
     "spellDMG": 20,
     "critChance": 10,
     "attack": 5,
@@ -233,15 +236,36 @@ while run:
 #Closes the filehandler, since we do not need it anymore, since we have the values in a local array
                 FileHandler.close()
 #Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
-                #player = PlayerClass(dsadsadsa)
+                #Makes the "Weapon Equipped" an integer, so it is easier to work with
+                outputFromSlot[3] = int(outputFromSlot[3])
+                        #First removes the "[]," from the string, and next splitting it up 
+                         #outputFromSlot[2] = outputFromSlot[2].translate({ord(i):None for i in '[,]'}).split()
+                # Defines an array to put the weapons you have into
+                weaponArray = []
+                outputFromSlot[2] = outputFromSlot[2].split()
+                # Iterates over the names in the list of weapons you have, and adds them accordingly.
+                for word in outputFromSlot[2]:
+                    if word == "woodenStick" and word not in weaponArray and not word == "":
+                        weaponArray.append(woodenStick)
+                    elif word == "crystalStaff" and word not in weaponArray and not word == "":
+                        weaponArray.append(crystalStaff)
+                    elif word == "broadSword" and word not in weaponArray and not word == "":
+                        weaponArray.append(broadSword)
                 playerDict["healthpoints"] = outputFromSlot[0]
                 playerDict["manapoints"] = outputFromSlot[1]
-                playerDict["weapons"] = outputFromSlot[2]
+                playerDict["weapons"] = weaponArray
                 playerDict["equippedWeapon"] = outputFromSlot[3]
                 playerDict["gold"] = outputFromSlot[4]
-                print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
+                #print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
 #Sets the class of the player
-                Player = PlayerClass(wizard, 70, 300, outputFromSlot[0], outputFromSlot[1], outputFromSlot[2], outputFromSlot[3], outputFromSlot[4])
+                Player = PlayerClass(wizard, 70, 300, outputFromSlot[0], outputFromSlot[1], weaponArray, outputFromSlot[3], outputFromSlot[4])
+                for vaaben in weaponArray:
+                    print(vaaben)
+                print(str(weaponArray))
+                #if "woodenStick" in Player.weapons["name"]:
+                    #print(weaponArray[1]["attack"])
+                if "woodenStick" in ["woodenStick", "sumfin", "sumfinelse"]:
+                    print(weaponArray[1]["attack"])
 #Changes scene to town, so the while-loop exits
                 scene = "town"
 
@@ -273,9 +297,11 @@ while run:
                 FileHandler.write("\n")
                 FileHandler.write(playerDict["manapoints"])
                 FileHandler.write("\n")
-                FileHandler.write(playerDict["weapons"])
+                for singleWeapon in Player.weapons:
+                    FileHandler.write(singleWeapon["name"])
+                    FileHandler.write(" ")
                 FileHandler.write("\n") 
-                FileHandler.write(playerDict["equippedWeapon"])
+                FileHandler.write(str(playerDict["equippedWeapon"]))
                 FileHandler.write("\n")
                 FileHandler.write(playerDict["gold"])
                 FileHandler.close()
@@ -317,8 +343,7 @@ while run:
         yourTurn = True
         canAttack = True
 #Sets the weapon
-        if Player.weaponEquipped == "woodenStick":
-            weapon = woodenStick
+        weapon = Player.weapons[Player.weaponEquipped]
 #Shifts to the battle scene
         scene = "battleScene"
 

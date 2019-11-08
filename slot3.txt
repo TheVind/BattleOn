@@ -1,5 +1,5 @@
 100
 500
-[woodenStick]
-woodenStick
-100000003
+woodenStick crystalStaff broadSword 
+1
+1023201321
