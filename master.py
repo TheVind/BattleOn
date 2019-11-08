@@ -37,6 +37,8 @@ battleButtonRed = pygame.image.load("battleBRed.png")
 wizard = pygame.image.load("wizard.png")
 #Gets the monster
 monster = pygame.image.load("monster.png")
+#Loads death screen
+uDed = pygame.image.load("uDed.png")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -264,8 +266,6 @@ while run:
                 print(str(weaponArray))
                 #if "woodenStick" in Player.weapons["name"]:
                     #print(weaponArray[1]["attack"])
-                if "woodenStick" in ["woodenStick", "sumfin", "sumfinelse"]:
-                    print(weaponArray[1]["attack"])
 #Changes scene to town, so the while-loop exits
                 scene = "town"
 
@@ -389,6 +389,11 @@ while run:
             elif state == "attack":
                 DMG = Monster.dealDamage(1,2,0,weapon["armor"])
                 Player.HP -= DMG
+                if Player.HP <= 0:
+                    win.blit(uDed,(0,0))
+                    pygame.display.update()
+                    pygame.time.delay(5000)
+                    scene = "town"
             win.blit(Monster.image,(Monster.x,Monster.y))
 
 
