@@ -39,6 +39,15 @@ wizard = pygame.image.load("wizard.png")
 monster = pygame.image.load("monster.png")
 #Loads death screen
 uDed = pygame.image.load("uDed.png")
+#Import weapon overview button
+weaponButton = pygame.image.load("weapons.png")
+#Import the weapons
+crystalStaffImage = pygame.image.load("crystalStaff.png")
+crystalStaffGreyedImage = pygame.image.load("crystalStaffGREYED.png")
+woodenStickImage = pygame.image.load("woodenStick.png")
+woodenStickGreyedImage = pygame.image.load("woodenStickGREYED.png")
+broadSwordImage = pygame.image.load("broadSword.png")
+broadSwordGreyedImage = pygame.image.load("broadSwordGREYED.png")
 #The player dictionary - the stats of our player + weapon and gold count.
 playerDict = {
     "healthpoints": 100,
@@ -239,20 +248,22 @@ while run:
                 FileHandler.close()
 #Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
                 #Makes the "Weapon Equipped" an integer, so it is easier to work with
-                outputFromSlot[3] = int(outputFromSlot[3])
+                #outputFromSlot[3] = int(outputFromSlot[3])
                         #First removes the "[]," from the string, and next splitting it up 
                          #outputFromSlot[2] = outputFromSlot[2].translate({ord(i):None for i in '[,]'}).split()
                 # Defines an array to put the weapons you have into
                 weaponArray = []
                 outputFromSlot[2] = outputFromSlot[2].split()
                 # Iterates over the names in the list of weapons you have, and adds them accordingly.
-                for word in outputFromSlot[2]:
-                    if word == "woodenStick" and word not in weaponArray and not word == "":
-                        weaponArray.append(woodenStick)
-                    elif word == "crystalStaff" and word not in weaponArray and not word == "":
-                        weaponArray.append(crystalStaff)
-                    elif word == "broadSword" and word not in weaponArray and not word == "":
-                        weaponArray.append(broadSword)
+                #for word in outputFromSlot[2]:
+                #    if word == "woodenStick" and word not in weaponArray and not word == "":
+                #        weaponArray.append(woodenStick)
+                #    elif word == "crystalStaff" and word not in weaponArray and not word == "":
+                #        weaponArray.append(crystalStaff)
+                #    elif word == "broadSword" and word not in weaponArray and not word == "":
+                #        weaponArray.append(broadSword)
+                for singleWeapon in outputFromSlot[2]:
+                    weaponArray.append(singleWeapon)
                 playerDict["healthpoints"] = outputFromSlot[0]
                 playerDict["manapoints"] = outputFromSlot[1]
                 playerDict["weapons"] = weaponArray
@@ -260,7 +271,7 @@ while run:
                 playerDict["gold"] = outputFromSlot[4]
                 #print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
 #Sets the class of the player
-                Player = PlayerClass(wizard, 70, 300, outputFromSlot[0], outputFromSlot[1], weaponArray, outputFromSlot[3], outputFromSlot[4])
+                Player = PlayerClass(wizard, 70, 300, int(outputFromSlot[0]), int(outputFromSlot[1]), weaponArray, outputFromSlot[3], int(outputFromSlot[4]))
                 for vaaben in weaponArray:
                     print(vaaben)
                 print(str(weaponArray))
@@ -293,17 +304,18 @@ while run:
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
                     continue
-                FileHandler.write(playerDict["healthpoints"])
+                FileHandler.write(str(Player.HP))
                 FileHandler.write("\n")
-                FileHandler.write(playerDict["manapoints"])
+                FileHandler.write(str(Player.MP))
                 FileHandler.write("\n")
                 for singleWeapon in Player.weapons:
-                    FileHandler.write(singleWeapon["name"])
+                    #FileHandler.write(singleWeapon["name"])
+                    FileHandler.write(singleWeapon)
                     FileHandler.write(" ")
                 FileHandler.write("\n") 
-                FileHandler.write(str(playerDict["equippedWeapon"]))
+                FileHandler.write(Player.weaponEquipped)
                 FileHandler.write("\n")
-                FileHandler.write(playerDict["gold"])
+                FileHandler.write(str(Player.gold))
                 FileHandler.close()
                 #This is the way we change scene from loading to the town scene
                 scene = "town"                   
@@ -316,6 +328,7 @@ while run:
         win.blit(townImage, (0,0))
         #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
         win.blit(scuffedButton, (850,350))
+        win.blit(weaponButton,(450,350))
         #Mouse over effect for the battle button (just for show)
         if mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
             win.blit(battleButtonRed, (50,350))
@@ -332,6 +345,49 @@ while run:
                     scene = "saveGame"
                 elif mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
                     scene = "battle"
+                elif mouseL[0] in range(450,600) and mouseL[1] in range(350,390):
+                    weaponLoop = True
+                    while weaponLoop:
+                        win.blit(townImage, (0,0))
+                        if "woodenStick" not in Player.weapons:
+                            win.blit(woodenStickGreyedImage,(50,50))
+                        else:
+                            if "woodenStick" == Player.weaponEquipped:
+                                pygame.draw.rect(win, (0,255,0), (45, 45, 135, 135))
+                            win.blit(woodenStickImage,(50,50))
+                        if "broadSword" not in Player.weapons:
+                            win.blit(broadSwordGreyedImage,(200,50))
+                        else:
+                            if "broadSword" == Player.weaponEquipped:
+                                pygame.draw.rect(win, (0,255,0), (195, 45, 135, 135))
+                            win.blit(broadSwordImage,(200,50))
+                        if "crystalStaff" not in Player.weapons:
+                            win.blit(crystalStaffGreyedImage,(350,50))
+                        else:
+                            if "crystalStaff" == Player.weaponEquipped:
+                                pygame.draw.rect(win, (0,255,0), (345, 45, 135, 135))
+                            win.blit(crystalStaffImage,(350,50))
+                        pygame.time.delay(20)
+                        pygame.display.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                run = False
+                                scene = "exit"
+                                weaponLoop = False
+                            if event.type == pygame.MOUSEBUTTONUP:
+                                mouseL = pygame.mouse.get_pos()
+                                if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
+                                    if "woodenStick" in Player.weapons:
+                                        Player.weaponEquipped = "woodenStick"
+                                elif mouseL[0] in range(200,325) and mouseL[1] in range(50,175):
+                                    if "broadSword" in Player.weapons:
+                                        Player.weaponEquipped = "broadSword"
+                                elif mouseL[0] in range(350,475) and mouseL[1] in range(50,175):
+                                    if "crystalStaff" in Player.weapons:
+                                        Player.weaponEquipped = "crystalStaff"
+                                else:
+                                    weaponLoop = False
+                                print(Player.weaponEquipped)
                 else:
                     continue
 
@@ -343,7 +399,13 @@ while run:
         yourTurn = True
         canAttack = True
 #Sets the weapon
-        weapon = Player.weapons[Player.weaponEquipped]
+        #weapon = Player.weapons[Player.weaponEquipped]
+        if Player.weaponEquipped == "woodenStick":
+            weapon = woodenStick
+        elif Player.weaponEquipped == "crystalStaff":
+            weapon = crystalStaff
+        elif Player.weaponEquipped == "broadSword":
+            weapon = broadSword
 #Shifts to the battle scene
         scene = "battleScene"
 
