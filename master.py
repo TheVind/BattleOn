@@ -449,7 +449,7 @@ while run:
             if state == "end":
                 canAttack = True
             elif state == "attack":
-                DMG = Monster.dealDamage(1,2,0,weapon["armor"])
+                DMG = Monster.dealDamage(3,2,0,weapon["armor"])
                 Player.HP -= DMG
                 if Player.HP <= 0:
                     Player.HP = 0
