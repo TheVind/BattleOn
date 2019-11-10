@@ -1,5 +1,5 @@
 100
 500
-crystalStaff broadSword 
+broadSword 
 broadSword
 1023201321

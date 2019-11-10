@@ -7,7 +7,7 @@ pygame.font.init()
 win = pygame.display.set_mode((1100, 600))
 
 #Sets a font, to use for damage text
-DMGFont = pygame.font.Font('freesansbold.ttf', 40)
+BigFont = pygame.font.Font('freesansbold.ttf', 40)
 font = pygame.font.Font('freesansbold.ttf', 16)
 
 woodenStick = {
@@ -41,6 +41,8 @@ monster = pygame.image.load("monster.png")
 uDed = pygame.image.load("uDed.png")
 #Import weapon overview button
 weaponButton = pygame.image.load("weapons.png")
+#Import shop for weapons-button
+weaponShopButton = pygame.image.load("weaponShop.png")
 #Import the weapons
 crystalStaffImage = pygame.image.load("crystalStaff.png")
 crystalStaffGreyedImage = pygame.image.load("crystalStaffGREYED.png")
@@ -177,7 +179,8 @@ broadSword = {
     "critChance": 20,
     "attack": 10,
     "spellPower": 0,
-    "armor": 5
+    "armor": 5,
+    "price": 43252
 }
 crystalStaff= {
     "name": "crystalStaff",
@@ -185,7 +188,8 @@ crystalStaff= {
     "critChance": 10,
     "attack": 5,
     "spellPower": 10,
-    "armor": 0
+    "armor": 0,
+    "price": 113212
 }
 
 #Some players values we dont know what to do with
@@ -328,7 +332,8 @@ while run:
         win.blit(townImage, (0,0))
         #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
         win.blit(scuffedButton, (850,350))
-        win.blit(weaponButton,(450,350))
+        win.blit(weaponButton,(300,350))
+        win.blit(weaponShopButton,(550,350))
         #Mouse over effect for the battle button (just for show)
         if mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
             win.blit(battleButtonRed, (50,350))
@@ -345,10 +350,58 @@ while run:
                     scene = "saveGame"
                 elif mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
                     scene = "battle"
-                elif mouseL[0] in range(450,600) and mouseL[1] in range(350,390):
+                elif mouseL[0] in range(550,700) and mouseL[1] in range(350,390):
                     weaponLoop = True
                     while weaponLoop:
                         win.blit(townImage, (0,0))
+                        textForGold = "Gold: " + str(Player.gold)
+                        textRectHP = (BigFont.render(str(textForGold), True, (255,255,255))).get_rect()
+                        textRectHP.center = (250,550)
+                        win.blit((BigFont.render(str(textForGold), True, (255,255,255))), textRectHP)
+                        if "woodenStick" not in Player.weapons:
+                            win.blit(woodenStickImage,(50,50))
+                        else:
+                            win.blit(woodenStickGreyedImage,(50,50))
+                        if "broadSword" not in Player.weapons:
+                            win.blit(broadSwordImage,(200,50))
+                        else:
+                            win.blit(broadSwordGreyedImage,(200,50))
+                        if "crystalStaff" not in Player.weapons:
+                            win.blit(crystalStaffImage,(350,50))
+                        else:
+                            win.blit(crystalStaffGreyedImage,(350,50))
+                        pygame.time.delay(20)
+                        pygame.display.update()
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                run = False
+                                scene = "exit"
+                                weaponLoop = False
+                            if event.type == pygame.MOUSEBUTTONUP:
+                                mouseL = pygame.mouse.get_pos()
+                                if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
+                                    if "woodenStick" not in Player.weapons:
+                                        Player.weapons.append("woodenStick")
+                                elif mouseL[0] in range(200,325) and mouseL[1] in range(50,175):
+                                    if "broadSword" not in Player.weapons and Player.gold >= broadSword["price"]:
+                                        Player.gold -= broadSword["price"]
+                                        Player.weapons.append("broadSword")
+                                elif mouseL[0] in range(350,475) and mouseL[1] in range(50,175):
+                                    if "crystalStaff" not in Player.weapons and Player.gold >= crystalStaff["price"]:
+                                        Player.gold -= crystalStaff["price"]
+                                        Player.weapons.append("crystalStaff")
+                                else:
+                                    weaponLoop = False
+                elif mouseL[0] in range(300,450) and mouseL[1] in range(350,390):
+                    weaponLoop = True
+                    while weaponLoop:
+                        win.blit(townImage, (0,0))
+                        textForGold = "Gold: " + str(Player.gold)
+                        Goldtext = DMGFont.render(textForGold, True, (255,255,255))
+                        goldRect = Goldtext.get_rect()
+                        #Defines the position of the HP bar
+                        goldRect.center = (150,400)
+                        win.blit(Goldtext, goldRect)
                         if "woodenStick" not in Player.weapons:
                             win.blit(woodenStickGreyedImage,(50,50))
                         else:
