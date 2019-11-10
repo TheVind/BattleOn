@@ -396,12 +396,6 @@ while run:
                     weaponLoop = True
                     while weaponLoop:
                         win.blit(townImage, (0,0))
-                        textForGold = "Gold: " + str(Player.gold)
-                        Goldtext = DMGFont.render(textForGold, True, (255,255,255))
-                        goldRect = Goldtext.get_rect()
-                        #Defines the position of the HP bar
-                        goldRect.center = (150,400)
-                        win.blit(Goldtext, goldRect)
                         if "woodenStick" not in Player.weapons:
                             win.blit(woodenStickGreyedImage,(50,50))
                         else:
