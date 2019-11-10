@@ -392,22 +392,32 @@ while run:
                                         Player.weapons.append("crystalStaff")
                                 else:
                                     weaponLoop = False
+                #If you click inside the "Weapons" button, do:
                 elif mouseL[0] in range(300,450) and mouseL[1] in range(350,390):
+                    #Enters a loop, to not make it run through as few things as possible for each iteration
                     weaponLoop = True
                     while weaponLoop:
+                        #Makes new background, since the graphics (which have been amended) otherwise stays
                         win.blit(townImage, (0,0))
+                        #If you do not have "Wooden Stick" in you inventory, you cannot equip it, therefore it displays a greyed out image
                         if "woodenStick" not in Player.weapons:
                             win.blit(woodenStickGreyedImage,(50,50))
+                        #If it didn't match on the if-sentence above, you must have it in your inventory, and you can therefore equip it.
                         else:
+                            #If you have "Wooden Stick" equipped, it draws a green bar around it, so you can see which weapon you have equipped.
                             if "woodenStick" == Player.weaponEquipped:
+                                #Draws the bar around it.
                                 pygame.draw.rect(win, (0,255,0), (45, 45, 135, 135))
+                            #Draws the non-greyed out image of "Wooden Stick" (after the green box, since you want the Wooden Stick to be in the front)
                             win.blit(woodenStickImage,(50,50))
+                        #Same as with "Wooden Stick"
                         if "broadSword" not in Player.weapons:
                             win.blit(broadSwordGreyedImage,(200,50))
                         else:
                             if "broadSword" == Player.weaponEquipped:
                                 pygame.draw.rect(win, (0,255,0), (195, 45, 135, 135))
                             win.blit(broadSwordImage,(200,50))
+                        #Same as with "Wooden Stick"
                         if "crystalStaff" not in Player.weapons:
                             win.blit(crystalStaffGreyedImage,(350,50))
                         else:
@@ -505,10 +515,8 @@ while run:
                     pygame.display.update()
                     pygame.time.delay(5000)
                     scene = "town"
+            #Renders the monster's image according to the assigned x- and y values
             win.blit(Monster.image,(Monster.x,Monster.y))
 
-
+#Quits the window, after the loop ends
 pygame.quit()
-    
-
-    
