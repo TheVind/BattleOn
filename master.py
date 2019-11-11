@@ -10,6 +10,7 @@ win = pygame.display.set_mode((1100, 600))
 BigFont = pygame.font.Font('freesansbold.ttf', 40)
 font = pygame.font.Font('freesansbold.ttf', 16)
 
+#Dictionaries for weapon.
 woodenStick = {
     "name": "woodenStick",
     "spellDMG": 5,
@@ -17,6 +18,25 @@ woodenStick = {
     "attack": 5,
     "spellPower": 0,
     "armor": 0,
+}
+
+broadSword = {
+    "name": "broadSword",
+    "spellDMG": 2,
+    "critChance": 20,
+    "attack": 10,
+    "spellPower": 0,
+    "armor": 5,
+    "price": 43252
+}
+crystalStaff= {
+    "name": "crystalStaff",
+    "spellDMG": 20,
+    "critChance": 10,
+    "attack": 5,
+    "spellPower": 10,
+    "armor": 0,
+    "price": 113212
 }
 
 #Import images
@@ -50,15 +70,8 @@ woodenStickImage = pygame.image.load("woodenStick.png")
 woodenStickGreyedImage = pygame.image.load("woodenStickGREYED.png")
 broadSwordImage = pygame.image.load("broadSword.png")
 broadSwordGreyedImage = pygame.image.load("broadSwordGREYED.png")
-#The player dictionary - the stats of our player + weapon and gold count.
-playerDict = {
-    "healthpoints": 100,
-    "manapoints": 100,
-    "weapons": [woodenStick],
-    "equippedWeapon": woodenStick,
-    "gold": 0
-    #"xp": 0
-}
+
+
 
 #THIS SECTION NEEDS COMMENTS
 class PlayerClass:
@@ -172,25 +185,7 @@ class SpellClass:
         #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
         return int(dmg - armorPrevail)
 
-#Defines the weapons to use
-broadSword = {
-    "name": "broadSword",
-    "spellDMG": 2,
-    "critChance": 20,
-    "attack": 10,
-    "spellPower": 0,
-    "armor": 5,
-    "price": 43252
-}
-crystalStaff= {
-    "name": "crystalStaff",
-    "spellDMG": 20,
-    "critChance": 10,
-    "attack": 5,
-    "spellPower": 10,
-    "armor": 0,
-    "price": 113212
-}
+
 
 #Some players values we dont know what to do with
         #self.HP = HP
@@ -268,17 +263,12 @@ while run:
                 #        weaponArray.append(broadSword)
                 for singleWeapon in outputFromSlot[2]:
                     weaponArray.append(singleWeapon)
-                playerDict["healthpoints"] = outputFromSlot[0]
-                playerDict["manapoints"] = outputFromSlot[1]
-                playerDict["weapons"] = weaponArray
-                playerDict["equippedWeapon"] = outputFromSlot[3]
-                playerDict["gold"] = outputFromSlot[4]
-                #print(str(playerDict["healthpoints"] + " " + playerDict["manapoints"] + " " + playerDict["weapons"] + " " + playerDict["equippedWeapon"] + " " + playerDict["gold"]))
+
 #Sets the class of the player
                 Player = PlayerClass(wizard, 70, 300, int(outputFromSlot[0]), int(outputFromSlot[1]), weaponArray, outputFromSlot[3], int(outputFromSlot[4]))
-                for vaaben in weaponArray:
+                """for vaaben in weaponArray:
                     print(vaaben)
-                print(str(weaponArray))
+                print(str(weaponArray))"""
                 #if "woodenStick" in Player.weapons["name"]:
                     #print(weaponArray[1]["attack"])
 #Changes scene to town, so the while-loop exits
@@ -426,6 +416,7 @@ while run:
                             win.blit(crystalStaffImage,(350,50))
                         pygame.time.delay(20)
                         pygame.display.update()
+
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 run = False

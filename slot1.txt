@@ -1,5 +1,5 @@
 100
 500
-broadSword 
-broadSword
+woodenStick
+woodenStick
 1023201321
