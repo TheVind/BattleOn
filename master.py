@@ -5,12 +5,13 @@ import random
 pygame.init()
 pygame.font.init()
 win = pygame.display.set_mode((1100, 600))
+pygame.display.set_caption("Ugandan BattleOn")
 
 #Sets a font, to use for damage text
 BigFont = pygame.font.Font('freesansbold.ttf', 40)
 font = pygame.font.Font('freesansbold.ttf', 16)
 
-#Dictionaries for weapon.
+#Dictionaries for weapon
 woodenStick = {
     "name": "woodenStick",
     "spellDMG": 5,
@@ -55,6 +56,7 @@ battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
 #Gets the wizard image
 wizard = pygame.image.load("wizard.png")
+zulul = pygame.image.load("ZULUL.png")
 #Gets the monster
 monster = pygame.image.load("monster.png")
 #Loads death screen
@@ -70,8 +72,8 @@ woodenStickImage = pygame.image.load("woodenStick.png")
 woodenStickGreyedImage = pygame.image.load("woodenStickGREYED.png")
 broadSwordImage = pygame.image.load("broadSword.png")
 broadSwordGreyedImage = pygame.image.load("broadSwordGREYED.png")
-
-
+#topleft small icon
+pygame.display.set_icon(zulul)
 
 #THIS SECTION NEEDS COMMENTS
 class PlayerClass:
