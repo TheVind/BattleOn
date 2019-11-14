@@ -45,6 +45,8 @@ crystalStaff= {
 loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
 townImage = pygame.image.load("bgtownFinal.jpg")
+#Download fireball image
+fireball = pygame.image.load("fireball.png")
 #Button imported
 scuffedButton = pygame.image.load("saveGame.png")
 #Gets saving background screen
@@ -98,18 +100,15 @@ class PlayerClass:
     def goldChange(changeOfGold):
         self.gold += changeOfGold
 
-    def changeHP(HPChange):
-        if HPChange == "toFull":
-            self.HP = self.startHP
-        else:
-            self.HP += HPChange
+    def fullHP(self):
+        self.HP = self.startHP
     
 
 #Defines the monster animation and attack
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -123,6 +122,8 @@ class MonsterClass:
         self.startingPosition = x
         #The threshold to which the monster can't move anymore, so it doesnt stand on top of player
         self.maxXPosition = maxX
+        self.HP = HP
+        self.startHP = HP
 
     #function that moves the monster on screen + gives feedback to indicate when monster is done attack/ready to attack
     def moveAnimation(self, mx=20, my=0, startingPosi=600):
@@ -157,9 +158,11 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, HP=100, mana=100, image=loading):
+    def __init__(self, x=0, y=0, image=loading):
         self.x = x
         self.y = y
+        self.startX = x
+        self.startY = y
         #Sets the image to use for the animation
         self.image = image
     #the moving of the spell picture - animation
@@ -167,7 +170,13 @@ class SpellClass:
         self.max = m
         self.x += mx
         self.y += my
-    
+        if self.max == self.y:
+            return False
+        else:
+            return True
+    def resetXY(self):
+        self.x = self.startX
+        self.y = self.startY
     def gainMana(self, mana, gain):
         return (mana+gain)
 
@@ -187,7 +196,7 @@ class SpellClass:
         #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
         return int(dmg - armorPrevail)
 
-
+FireballClass = SpellClass(-200, -500, fireball)
 
 #Some players values we dont know what to do with
         #self.HP = HP
@@ -444,10 +453,10 @@ while run:
 #Loads the variables before battle
     if scene == "battle":
 #Loads the monster
-        Monster = MonsterClass(monster, 800, 300, 440)
+        Monster = MonsterClass(monster, 800, 300, 440, 100)
 #Sets some variables for the fighting scene
-        yourTurn = True
         canAttack = True
+        Player.fullHP()
 #Sets the weapon
         #weapon = Player.weapons[Player.weaponEquipped]
         if Player.weaponEquipped == "woodenStick":
@@ -456,6 +465,7 @@ while run:
             weapon = crystalStaff
         elif Player.weaponEquipped == "broadSword":
             weapon = broadSword
+        runAnimation = False
 #Shifts to the battle scene
         scene = "battleScene"
 
@@ -463,11 +473,19 @@ while run:
     while scene == "battleScene":
         pygame.time.delay(20)
         pygame.display.update()
+        # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
+        keys = pygame.key.get_pressed()
+        #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 #run = False
                 #scene = "exit"
                 canAttack = False
+        # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
+            if keys[pygame.K_f] and canAttack:
+                runAnimation = True
+        #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            
 
         #Renders the background for the scene
         win.blit(battlebg, (0,0))
@@ -488,7 +506,12 @@ while run:
         #NEED COMMENTS HERE
         win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
         win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
-        
+
+        textRectHPMonster = (font.render(str(Monster.HP), True, (255,255,255))).get_rect()
+        textRectHPMonster.center = (850,260)
+        hpBarMonster = pygame.draw.rect(win, (0,128,0), (750,250,(200*(Monster.HP/Monster.startHP)),50))
+        win.blit((font.render(str(Monster.HP), True, (255,255,255))), textRectHPMonster)
+        #Monster.HP -= FireballClass.dealDamage(2,1,10,0,0)
         #If statement to control the flow of the turn based combat
         #making monster stand still when it's players turn to attack
         if canAttack:
@@ -510,6 +533,18 @@ while run:
                     scene = "town"
             #Renders the monster's image according to the assigned x- and y values
             win.blit(Monster.image,(Monster.x,Monster.y))
+            #########
+    #########
+    # IDEA! #
+    #########
+    #########
+        if runAnimation:
+            win.blit(FireballClass.image,(FireballClass.x,FireballClass.y))
+            runAnimation = FireballClass.moveAnimation(200,20,20)
+            if not runAnimation:
+                Monster.HP -= FireballClass.dealDamage(2,1,weapon["critChance"],0,weapon["spellPower"])
+                FireballClass.resetXY()
+                canAttack = False
 
 #Quits the window, after the loop ends
 pygame.quit()
