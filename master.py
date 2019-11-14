@@ -507,9 +507,11 @@ while run:
         win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
         win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
 
+
+        #Below is code for the Monster's HP bar
         textRectHPMonster = (font.render(str(Monster.HP), True, (255,255,255))).get_rect()
-        textRectHPMonster.center = (850,260)
-        hpBarMonster = pygame.draw.rect(win, (0,128,0), (750,250,(200*(Monster.HP/Monster.startHP)),50))
+        textRectHPMonster.center = (920,260)
+        hpBarMonster = pygame.draw.rect(win, (0,128,0), (820,250,(200*(Monster.HP/Monster.startHP)),50))
         win.blit((font.render(str(Monster.HP), True, (255,255,255))), textRectHPMonster)
         #Monster.HP -= FireballClass.dealDamage(2,1,10,0,0)
         #If statement to control the flow of the turn based combat
