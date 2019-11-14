@@ -540,12 +540,19 @@ while run:
     # IDEA! #
     #########
     #########
+        #If you press "f", the run animation gets True. After the fireball iteration finishes this becomes false.
         if runAnimation:
+            #Since you have asked to run the animation, it will now show the fireball
             win.blit(FireballClass.image,(FireballClass.x,FireballClass.y))
+            #Moves the fireball and checks if it has reached its maximum position based on the return function
             runAnimation = FireballClass.moveAnimation(200,20,20)
+            #If it has reached its max position, it becomes false, and the if-sentence below is therefore true
             if not runAnimation:
+                #After it finishes, it deals damage to the mob
                 Monster.HP -= FireballClass.dealDamage(2,1,weapon["critChance"],0,weapon["spellPower"])
+                #Resets the fireballs x and y coordinates
                 FireballClass.resetXY()
+                #Makes so you cannot attack again, and so the mob attacks
                 canAttack = False
 
 #Quits the window, after the loop ends
