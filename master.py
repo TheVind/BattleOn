@@ -109,7 +109,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -125,6 +125,7 @@ class MonsterClass:
         self.maxXPosition = maxX
         self.HP = HP
         self.startHP = HP
+        self.goldDrop = goldDrop
 
     #function that moves the monster on screen + gives feedback to indicate when monster is done attack/ready to attack
     def moveAnimation(self, mx=20, my=0, startingPosi=600):
@@ -159,13 +160,14 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, image=loading):
+    def __init__(self, x=0, y=0, image=loading, manaCost=13):
         self.x = x
         self.y = y
         self.startX = x
         self.startY = y
         #Sets the image to use for the animation
         self.image = image
+        self.manaCost = manaCost
     #the moving of the spell picture - animation
     def moveAnimation(self, m=200, mx=20, my=20):
         self.max = m
@@ -175,6 +177,11 @@ class SpellClass:
             return False
         else:
             return True
+    def checkMana(self):
+        if Player.MP < self.manaCost:
+            return "noMana"
+        else:
+            return "enoughMana"
     def resetXY(self):
         self.x = self.startX
         self.y = self.startY
@@ -182,22 +189,25 @@ class SpellClass:
         return (mana+gain)
 
     def dealDamage(self, dmgMulti=2, difference=1, critCh=10, a=0, sp=0):
-        dmg = random.randint(((5-difference)*dmgMulti),((5+difference)*dmgMulti))
+        if not Player.MP < self.manaCost:
+            dmg = random.randint(((5-difference)*dmgMulti),((5+difference)*dmgMulti))
         #Variable to generate chance to crit - random number between 1 and 10
-        getCritChance = random.randint(1,10)
+            getCritChance = random.randint(1,10)
         #Checking for crit dynamically
-        if (critCh/10) >= getCritChance:
+            if (critCh/10) >= getCritChance:
             #the actual bonus dmg calculation
-            dmg = dmg*2
+                dmg = dmg*2
         #Add dmg to your attack depending on the amount of spellpower your weapon has
-        spellPowerGain = (sp/100)*dmg
-        dmg = dmg + spellPowerGain
+            spellPowerGain = (sp/100)*dmg
+            dmg = dmg + spellPowerGain
         #Takes the armor of the monster, and finds out how much damage the armor absorbs
-        armorPrevail = (a/100)*dmg
+            armorPrevail = (a/100)*dmg
+            Player.MP -= self.manaCost
         #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
-        return int(dmg - armorPrevail)
+            return int(dmg - armorPrevail)
+        return "noMana"
 
-FireballClass = SpellClass(-200, -500, fireball)
+FireballClass = SpellClass(-200, -500, fireball, 13)
 
 
 #Some players values we dont know what to do with
@@ -466,7 +476,7 @@ while run:
 #Loads the variables before battle
     if scene == "battle":
 #Loads the monster
-        Monster = MonsterClass(monster, 800, 300, 440, 100)
+        Monster = MonsterClass(monster, 800, 300, 440, 100, 1)
 #Sets some variables for the fighting scene
         canAttack = True
         Player.fullHP()
@@ -562,11 +572,20 @@ while run:
             #If it has reached its max position, it becomes false, and the if-sentence below is therefore true
             if not runAnimation:
                 #After it finishes, it deals damage to the mob
-                Monster.HP -= FireballClass.dealDamage(2,1,weapon["critChance"],0,weapon["spellPower"])
+                if not FireballClass.checkMana() == "noMana":
+                    Monster.HP -= FireballClass.dealDamage(2,1,weapon["critChance"],0,weapon["spellPower"])
                 #Resets the fireballs x and y coordinates
-                FireballClass.resetXY()
-                #Makes so you cannot attack again, and so the mob attacks
-                canAttack = False
+                    FireballClass.resetXY()
+                    if Monster.HP <= 0:
+                        Monster.HP = 0
+                        pygame.display.update()
+                        pygame.time.delay(1000)
+                        print(str(Player.gold))
+                        Player.gold += Monster.goldDrop
+                        print(str(Player.gold))
+                        scene = "town"
+                    #Makes so you cannot attack again, and so the mob attacks
+                    canAttack = False
 
 #Quits the window, after the loop ends
 pygame.quit()
