@@ -56,6 +56,7 @@ battlebg = pygame.image.load("forest.jpg")
 #Gets scuffed button
 battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
+exitButton = pygame.image.load("exit.png")
 #Gets the wizard image
 wizard = pygame.image.load("wizard.png")
 zulul = pygame.image.load("ZULUL.png")
@@ -198,6 +199,7 @@ class SpellClass:
 
 FireballClass = SpellClass(-200, -500, fireball)
 
+
 #Some players values we dont know what to do with
         #self.HP = HP
         #self.mana = mana
@@ -224,7 +226,6 @@ while run:
         pygame.time.delay(20)
         #win.blit is the function which we use to draw everything you see on the screen; like background, characters, text and even animations
         win.blit(loading, (0,0))
-
 #Goes through all the event that happens (with the mouse)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -290,6 +291,11 @@ while run:
         pygame.display.update()
         pygame.time.delay(20)
         win.blit(savedScreen,(0,0))
+        win.blit(exitButton,(465,500))
+        if not saveSlot == False:
+            textRectSave = (BigFont.render(str(saveSlot), True, (255,255,255))).get_rect()
+            textRectSave.center = (210,520)
+            win.blit((BigFont.render(str(saveSlot), True, (255,255,255))), textRectSave)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -302,11 +308,18 @@ while run:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
                     FileHandler = open("slot1.txt", "w")
+                    saveSlot = "Game saved to Slot 1"
                 elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
                     FileHandler = open("slot2.txt", "w")
+                    saveSlot = "Game saved to Slot 2"
                 elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
                     FileHandler = open("slot3.txt", "w")
+                    saveSlot = "Game saved to Slot 3"
 #If you do not select a slot, it does nothing, and continues to the top of the loop
+                elif mouseL[0] in range(465,545) and mouseL[1] in range(500,540):
+                    #This is the way we change scene from loading to the town scene 
+                    scene = "town"
+                    continue
                 else:
                     continue
                 FileHandler.write(str(Player.HP))
@@ -322,8 +335,7 @@ while run:
                 FileHandler.write("\n")
                 FileHandler.write(str(Player.gold))
                 FileHandler.close()
-                #This is the way we change scene from loading to the town scene
-                scene = "town"                   
+                                 
     
     
     while scene == "town":
@@ -348,6 +360,7 @@ while run:
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
                 if mouseL[0] in range(850,1000) and mouseL[1] in range(350,390):
+                    saveSlot = False
                     scene = "saveGame"
                 elif mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
                     scene = "battle"
