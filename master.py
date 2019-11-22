@@ -45,8 +45,9 @@ crystalStaff= {
 loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
 townImage = pygame.image.load("bgtownFinal.jpg")
-#Download fireball image
+#Download fireball and lightning image
 fireball = pygame.image.load("fireball.png")
+lightning = pygame.image.load("lightning.png")
 #Button imported
 scuffedButton = pygame.image.load("saveGame.png")
 #Gets saving background screen
@@ -94,6 +95,41 @@ class PlayerClass:
         self.weaponEquipped = equipped
         #Parameter to gain/lose gold to get new weapon 
         self.gold = int(gold)
+        self.startX = x
+        self.startY = y
+        self.moveBack = False
+
+    def moveAnimation(self):
+        self.x += 20
+        if self.x >= 500:
+            self.moveBack = True
+        if self.moveBack:
+            self.x -= 40
+        if self.startX > self.x:
+            self.moveBack = False
+            return False
+        else:
+            return True
+    
+    def checkMana(self):
+        return True
+
+    def resetXY(self):
+        self.x = self.startX
+        self.y = self.startY
+
+    def dealDamage(self, critCh=10, a=0, sp=0, attack=0):
+        dmg = random.randint(int(attack-(attack*0.1)),int(attack+(attack*0.1)))
+        #Variable to generate chance to crit - random number between 1 and 10
+        getCritChance = random.randint(1,10)
+        #Checking for crit dynamically
+        if (critCh/10) >= getCritChance:
+            #the actual bonus dmg calculation
+            dmg = dmg*2
+        #Takes the armor of the monster, and finds out how much damage the armor absorbs
+        armorPrevail = (a/100)*dmg
+        #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
+        return int(dmg - armorPrevail)
 
     def addWeapon(weapon):
         self.weapons.append(weapon)
@@ -160,7 +196,7 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, image=loading, manaCost=13):
+    def __init__(self, x=0, y=0, image=loading, manaCost=13, dmgMulti=2, difference=1, maxy=200, movex=20, movey=20):
         self.x = x
         self.y = y
         self.startX = x
@@ -168,11 +204,15 @@ class SpellClass:
         #Sets the image to use for the animation
         self.image = image
         self.manaCost = manaCost
+        self.dmgMulti = dmgMulti
+        self.difference = difference
+        self.max = maxy
+        self.movex = movex
+        self.movey = movey
     #the moving of the spell picture - animation
-    def moveAnimation(self, m=200, mx=20, my=20):
-        self.max = m
-        self.x += mx
-        self.y += my
+    def moveAnimation(self):
+        self.x += self.movex
+        self.y += self.movey
         if self.max == self.y:
             return False
         else:
@@ -188,9 +228,9 @@ class SpellClass:
     def gainMana(self, mana, gain):
         return (mana+gain)
 
-    def dealDamage(self, dmgMulti=2, difference=1, critCh=10, a=0, sp=0):
+    def dealDamage(self, critCh=10, a=0, sp=0, attack=0):
         if not Player.MP < self.manaCost:
-            dmg = random.randint(((5-difference)*dmgMulti),((5+difference)*dmgMulti))
+            dmg = random.randint(((5-self.difference)*self.dmgMulti),((5+self.difference)*self.dmgMulti))
         #Variable to generate chance to crit - random number between 1 and 10
             getCritChance = random.randint(1,10)
         #Checking for crit dynamically
@@ -207,7 +247,8 @@ class SpellClass:
             return int(dmg - armorPrevail)
         return "noMana"
 
-FireballClass = SpellClass(-200, -500, fireball, 13)
+FireballClass = SpellClass(-200, -500, fireball, 13, 2, 1, 200, 20, 20)
+LightningClass = SpellClass(660, -500, lightning, 3, 1, 1, 0, 0, 20)
 
 
 #Some players values we dont know what to do with
@@ -488,6 +529,7 @@ while run:
             weapon = crystalStaff
         elif Player.weaponEquipped == "broadSword":
             weapon = broadSword
+# Variable to keep track on whether or not you have queued an attack
         runAnimation = False
 #Shifts to the battle scene
         scene = "battleScene"
@@ -505,7 +547,17 @@ while run:
                 #scene = "exit"
                 canAttack = False
         # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
-            if keys[pygame.K_f] and canAttack:
+            elif keys[pygame.K_f] and canAttack:
+        # Sets the variable used to make animation and deal damage equal to the class defined as fireball
+                spellVariable = FireballClass
+        # Queues the attack through this variable
+                runAnimation = True
+            elif keys[pygame.K_l] and canAttack:
+        # Same as above, but for lightning
+                spellVariable = LightningClass
+                runAnimation = True
+            elif keys[pygame.K_a] and canAttack:
+                spellVariable = Player
                 runAnimation = True
         #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
             
@@ -547,7 +599,7 @@ while run:
             if state == "end":
                 canAttack = True
             elif state == "attack":
-                DMG = Monster.dealDamage(3,2,0,weapon["armor"])
+                DMG = Monster.dealDamage(0.5,2,0,weapon["armor"])
                 Player.HP -= DMG
                 if Player.HP <= 0:
                     Player.HP = 0
@@ -563,29 +615,46 @@ while run:
     # IDEA! #
     #########
     #########
-        #If you press "f", the run animation gets True. After the fireball iteration finishes this becomes false.
+    # If you have queued an attack, this becomes True, and executes
         if runAnimation:
-            #Since you have asked to run the animation, it will now show the fireball
-            win.blit(FireballClass.image,(FireballClass.x,FireballClass.y))
-            #Moves the fireball and checks if it has reached its maximum position based on the return function
-            runAnimation = FireballClass.moveAnimation(200,20,20)
+            #Since you have asked to run the animation, it will now show the image for the spell queued
+            win.blit(spellVariable.image,(spellVariable.x,spellVariable.y))
+            #Moves the animation and checks if it has reached its maximum position based on the return function
+            runAnimation = spellVariable.moveAnimation()
             #If it has reached its max position, it becomes false, and the if-sentence below is therefore true
             if not runAnimation:
                 #After it finishes, it deals damage to the mob
-                if not FireballClass.checkMana() == "noMana":
-                    Monster.HP -= FireballClass.dealDamage(2,1,weapon["critChance"],0,weapon["spellPower"])
-                #Resets the fireballs x and y coordinates
-                    FireballClass.resetXY()
+                if not spellVariable.checkMana() == "noMana":
+                    DMG = spellVariable.dealDamage(weapon["critChance"],0,weapon["spellPower"], weapon["attack"])
+                    Monster.HP -= DMG
+                #Resets the spells x and y coordinates
+                    spellVariable.resetXY()
+                    textRectDMG = (BigFont.render(str(DMG), True, (255,0,0))).get_rect()
+                    textRectDMG.center = (890,200)
+                    win.blit((BigFont.render(str(DMG), True, (255,0,0))), textRectDMG)
+                    pygame.display.update()
+                    pygame.time.delay(500)
+                #Checks if you have killed the monster, if you have, it executes
                     if Monster.HP <= 0:
+                # Monster's HP is set to 0, since it otherwise could be in minus
                         Monster.HP = 0
+                # Updates the HP bar
                         pygame.display.update()
+                # Lets you watch the dead mob for a while
                         pygame.time.delay(1000)
+                # CHECK STRING ---- SKAL SLETTES !!!! ---- men et tjek for hvor meget guld du har før og efter mobbet dropper guld
                         print(str(Player.gold))
+                # Rewards the player with some gold drop after the mob dies
                         Player.gold += Monster.goldDrop
                         print(str(Player.gold))
+                        Player.HP = Player.startHP
+                        Player.MP = Player.startMP
+                # Changes the scene back to town
                         scene = "town"
                     #Makes so you cannot attack again, and so the mob attacks
                     canAttack = False
+            
+            
 
 #Quits the window, after the loop ends
 pygame.quit()
