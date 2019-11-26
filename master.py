@@ -852,7 +852,7 @@ while run:
                                     if mouseL[0] in range(100,250) and mouseL[1] in range(400,440):
                                         townLoop = False
                                     elif mouseL[0] in range(800,950) and mouseL[1] in range(400,440):
-                                        Player = PlayerClass(wizard, 300,300,100,100,["woodenStick"],"woodenStick",0,1)
+                                        Player = PlayerClass(wizard, 70,300,100,100,["woodenStick"],"woodenStick",0,1)
                                         townLoop = False
                                     else:
                                         continue
