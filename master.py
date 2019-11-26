@@ -268,10 +268,6 @@ FireballClass = SpellClass(-200, -500, fireball, 13, 2, 1, 200, 20, 20)
 LightningClass = SpellClass(660, -500, lightning, 3, 1, 1, 0, 0, 20)
 
 
-#Some players values we dont know what to do with
-        #self.HP = HP
-        #self.mana = mana
-
 #Sets variable to make the loop ask for a slot to load before anything else
 scene = "startOfGame"
 
@@ -328,33 +324,15 @@ while run:
                     outputFromSlot.append(line.replace("\n", ""))
 #Closes the filehandler, since we do not need it anymore, since we have the values in a local array
                 FileHandler.close()
-#Adds the values from the file (now the array), to the dictionary/class where player stats are stored.
-                #Makes the "Weapon Equipped" an integer, so it is easier to work with
-                #outputFromSlot[3] = int(outputFromSlot[3])
-                        #First removes the "[]," from the string, and next splitting it up 
-                         #outputFromSlot[2] = outputFromSlot[2].translate({ord(i):None for i in '[,]'}).split()
                 # Defines an array to put the weapons you have into
                 weaponArray = []
                 outputFromSlot[2] = outputFromSlot[2].split()
-                # Iterates over the names in the list of weapons you have, and adds them accordingly.
-                #for word in outputFromSlot[2]:
-                #    if word == "woodenStick" and word not in weaponArray and not word == "":
-                #        weaponArray.append(woodenStick)
-                #    elif word == "crystalStaff" and word not in weaponArray and not word == "":
-                #        weaponArray.append(crystalStaff)
-                #    elif word == "broadSword" and word not in weaponArray and not word == "":
-                #        weaponArray.append(broadSword)
                 for singleWeapon in outputFromSlot[2]:
                     weaponArray.append(singleWeapon)
 
 #Sets the class of the player
                 Player = PlayerClass(wizard, 70, 300, int(outputFromSlot[0]), int(outputFromSlot[1]), weaponArray, outputFromSlot[3], int(outputFromSlot[4]), int(outputFromSlot[5]))
-                """for vaaben in weaponArray:
-                    print(vaaben)
-                print(str(weaponArray))"""
-                #if "woodenStick" in Player.weapons["name"]:
-                    #print(weaponArray[1]["attack"])
-#Changes scene to town, so the while-loop exits
+    # Shifts to the town
                 scene = "town"
 
     #Need something to trigger this thing, but it will write to the file selected
@@ -782,11 +760,6 @@ while run:
                     scene = "town"
             #Renders the monster's image according to the assigned x- and y values
             win.blit(Monster.image,(Monster.x,Monster.y))
-            #########
-    #########
-    # IDEA! #
-    #########
-    #########
     # If you have queued an attack, this becomes True, and executes
         if runAnimation and not spellVariable.checkMana() == "noMana":
             #Since you have asked to run the animation, it will now show the image for the spell queued
@@ -858,10 +831,6 @@ while run:
                                         continue
 
                         scene = "town"
-
-
-            
-            
 
 #Quits the window, after the loop ends
 pygame.quit()
