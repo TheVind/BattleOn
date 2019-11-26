@@ -63,6 +63,13 @@ wizard = pygame.image.load("wizard.png")
 zulul = pygame.image.load("ZULUL.png")
 #Gets the monster
 monster = pygame.image.load("monster.png")
+# IMPORTS THE NUMBERS FOR THE BATTLE SCENE
+normal2 = pygame.image.load("normal2.png")
+normal1 = pygame.image.load("normal1.png")
+greyed1 = pygame.image.load("greyed1.png")
+greyed2 = pygame.image.load("greyed2.png")
+hover1 = pygame.image.load("hover1.png")
+hover2 = pygame.image.load("hover2.png")
 #Loads death screen
 uDed = pygame.image.load("uDed.png")
 #Import weapon overview button
@@ -82,7 +89,7 @@ pygame.display.set_icon(zulul)
 #THIS SECTION NEEDS COMMENTS
 class PlayerClass:
 
-    def __init__(self, image, x=300, y=300, hp=100, mana=100, weapons=[woodenStick], equipped=woodenStick, gold=0):
+    def __init__(self, image, x=300, y=300, hp=100, mana=100, weapons=[woodenStick], equipped=woodenStick, gold=0, reachedLevel=1):
         #having this paramter makes us able to swap character model
         self.image = image
         self.x = x
@@ -98,6 +105,7 @@ class PlayerClass:
         self.startX = x
         self.startY = y
         self.moveBack = False
+        self.reachedLevel = reachedLevel
 
     def moveAnimation(self):
         self.x += 20
@@ -145,7 +153,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1, dmgMulti=1, difference=2, critCh=0):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -162,6 +170,9 @@ class MonsterClass:
         self.HP = HP
         self.startHP = HP
         self.goldDrop = goldDrop
+        self.dmgMulti = dmgMulti
+        self.difference = difference
+        self.critCh = critCh
 
     #function that moves the monster on screen + gives feedback to indicate when monster is done attack/ready to attack
     def moveAnimation(self, mx=20, my=0, startingPosi=600):
@@ -184,12 +195,12 @@ class MonsterClass:
         return False
 
     #Monster dmg function to determine dmg and crit
-    def dealDamage(self, dmgMulti=1, d=2, critCh=0, a=0):
+    def dealDamage(self, a=0):
         #the dmg calulation it self
-        dmg = random.randint(((8-d)*dmgMulti),((8+d)*dmgMulti))
+        dmg = random.randint(((8-self.difference)*self.dmgMulti),((8+self.difference)*self.dmgMulti))
         #the calculation of the crit chance - default is set so the monster cannot crit - further explained in the spell class
         getCritChance = random.randint(1,10)
-        if (critCh/10) >= getCritChance:
+        if (self.critCh/10) >= getCritChance:
             dmg = dmg*2
         armorGain = (a/100)*dmg
         return int(dmg - armorGain)
@@ -328,7 +339,7 @@ while run:
                     weaponArray.append(singleWeapon)
 
 #Sets the class of the player
-                Player = PlayerClass(wizard, 70, 300, int(outputFromSlot[0]), int(outputFromSlot[1]), weaponArray, outputFromSlot[3], int(outputFromSlot[4]))
+                Player = PlayerClass(wizard, 70, 300, int(outputFromSlot[0]), int(outputFromSlot[1]), weaponArray, outputFromSlot[3], int(outputFromSlot[4]), int(outputFromSlot[5]))
                 """for vaaben in weaponArray:
                     print(vaaben)
                 print(str(weaponArray))"""
@@ -385,6 +396,8 @@ while run:
                 FileHandler.write(Player.weaponEquipped)
                 FileHandler.write("\n")
                 FileHandler.write(str(Player.gold))
+                FileHandler.write("\n")
+                FileHandler.write(str(Player.reachedLevel))
                 FileHandler.close()
                                  
     
@@ -414,10 +427,43 @@ while run:
                     saveSlot = False
                     scene = "saveGame"
                 elif mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
-                    scene = "battle"
+                    townLoop = True
+                    while townLoop:
+                        pygame.time.delay(20)
+                        pygame.display.update()
+                        mouseL = pygame.mouse.get_pos()
+                        win.blit(townImage, (0,0))
+                        if mouseL[0] in range(150,250) and mouseL[1] in range(150,250):
+                            win.blit(hover1,(150,150))
+                        else:
+                            win.blit(normal1,(150,150))
+                        if mouseL[0] in range(300,400) and mouseL[1] in range(150,250) and Player.reachedLevel >= 2:
+                            win.blit(hover2,(300,150))
+                        elif Player.reachedLevel < 2:
+                            win.blit(greyed2,(300,150))
+                        else:
+                            win.blit(normal2,(300,150))
+                        for event in pygame.event.get():
+                            if event.type == pygame.QUIT:
+                                run = False
+                                scene = "exit"
+                                townLoop = False
+                            if event.type == pygame.MOUSEBUTTONUP:
+                                if mouseL[0] in range(150,250) and mouseL[1] in range(150,250):
+                                    scene = "battle"
+                                    monsterLevel = 1
+                                    townLoop = False
+                                elif mouseL[0] in range(300,400) and mouseL[1] in range(150,250):
+                                     if Player.reachedLevel >= 2:
+                                        scene = "battle"
+                                        monsterLevel = 2
+                                        townLoop = False
+                                else:
+                                    townLoop = False
+                #    scene = "battle"
                 elif mouseL[0] in range(550,700) and mouseL[1] in range(350,390):
-                    weaponLoop = True
-                    while weaponLoop:
+                    townLoop = True
+                    while townLoop:
                         win.blit(townImage, (0,0))
                         textForGold = "Gold: " + str(Player.gold)
                         textRectHP = (BigFont.render(str(textForGold), True, (255,255,255))).get_rect()
@@ -441,7 +487,7 @@ while run:
                             if event.type == pygame.QUIT:
                                 run = False
                                 scene = "exit"
-                                weaponLoop = False
+                                townLoop = False
                             if event.type == pygame.MOUSEBUTTONUP:
                                 mouseL = pygame.mouse.get_pos()
                                 if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
@@ -456,12 +502,12 @@ while run:
                                         Player.gold -= crystalStaff["price"]
                                         Player.weapons.append("crystalStaff")
                                 else:
-                                    weaponLoop = False
+                                    townLoop = False
                 #If you click inside the "Weapons" button, do:
                 elif mouseL[0] in range(300,450) and mouseL[1] in range(350,390):
                     #Enters a loop, to not make it run through as few things as possible for each iteration
-                    weaponLoop = True
-                    while weaponLoop:
+                    townLoop = True
+                    while townLoop:
                         #Makes new background, since the graphics (which have been amended) otherwise stays
                         win.blit(townImage, (0,0))
                         #If you do not have "Wooden Stick" in you inventory, you cannot equip it, therefore it displays a greyed out image
@@ -496,7 +542,7 @@ while run:
                             if event.type == pygame.QUIT:
                                 run = False
                                 scene = "exit"
-                                weaponLoop = False
+                                townLoop = False
                             if event.type == pygame.MOUSEBUTTONUP:
                                 mouseL = pygame.mouse.get_pos()
                                 if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
@@ -509,7 +555,7 @@ while run:
                                     if "crystalStaff" in Player.weapons:
                                         Player.weaponEquipped = "crystalStaff"
                                 else:
-                                    weaponLoop = False
+                                    townLoop = False
                                 print(Player.weaponEquipped)
                 else:
                     continue
@@ -517,7 +563,12 @@ while run:
 #Loads the variables before battle
     if scene == "battle":
 #Loads the monster
-        Monster = MonsterClass(monster, 800, 300, 440, 100, 1)
+        if monsterLevel == 1:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 1, 0.5, 2, 0)
+        elif monsterLevel == 2:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 5, 4, 2, 0)
+        else:
+            print("ERROR!!!")
 #Sets some variables for the fighting scene
         canAttack = True
         Player.fullHP()
@@ -598,8 +649,14 @@ while run:
             state = Monster.moveAnimation(20,0,Monster.startingPosition)
             if state == "end":
                 canAttack = True
+                textRectDMG = (BigFont.render(str(DMG), True, (255,0,0))).get_rect()
+                textRectDMG.center = (250,200)
+                win.blit((BigFont.render(str(DMG), True, (255,0,0))), textRectDMG)
+                win.blit(Monster.image,(Monster.x,Monster.y))
+                pygame.display.update()
+                pygame.time.delay(500)
             elif state == "attack":
-                DMG = Monster.dealDamage(0.5,2,0,weapon["armor"])
+                DMG = Monster.dealDamage(weapon["armor"])
                 Player.HP -= DMG
                 if Player.HP <= 0:
                     Player.HP = 0
@@ -625,7 +682,11 @@ while run:
             if not runAnimation:
                 #After it finishes, it deals damage to the mob
                 if not spellVariable.checkMana() == "noMana":
+                    #Makes so you cannot attack again, and so the mob attacks
+                    canAttack = False
+                    # Calculates the damage you are doing to the monster
                     DMG = spellVariable.dealDamage(weapon["critChance"],0,weapon["spellPower"], weapon["attack"])
+                    # Extracts the damage you dealt from the monster's HP
                     Monster.HP -= DMG
                 #Resets the spells x and y coordinates
                     spellVariable.resetXY()
@@ -649,10 +710,11 @@ while run:
                         print(str(Player.gold))
                         Player.HP = Player.startHP
                         Player.MP = Player.startMP
+                        if Player.reachedLevel < monsterLevel + 1:
+                            Player.reachedLevel = monsterLevel + 1
+                        print("Monster Level:", str(Player.reachedLevel))
                 # Changes the scene back to town
                         scene = "town"
-                    #Makes so you cannot attack again, and so the mob attacks
-                    canAttack = False
             
             
 
