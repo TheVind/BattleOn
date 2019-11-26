@@ -14,7 +14,6 @@ font = pygame.font.Font('freesansbold.ttf', 16)
 #Dictionaries for weapon
 woodenStick = {
     "name": "woodenStick",
-    "spellDMG": 5,
     "critChance": 10,
     "attack": 5,
     "spellPower": 0,
@@ -23,7 +22,6 @@ woodenStick = {
 
 broadSword = {
     "name": "broadSword",
-    "spellDMG": 2,
     "critChance": 20,
     "attack": 10,
     "spellPower": 0,
@@ -32,10 +30,9 @@ broadSword = {
 }
 crystalStaff= {
     "name": "crystalStaff",
-    "spellDMG": 20,
-    "critChance": 10,
+    "critChance": 50,
     "attack": 5,
-    "spellPower": 10,
+    "spellPower": 300,
     "armor": 0,
     "price": 113212
 }
@@ -66,10 +63,18 @@ monster = pygame.image.load("monster.png")
 # IMPORTS THE NUMBERS FOR THE BATTLE SCENE
 normal2 = pygame.image.load("normal2.png")
 normal1 = pygame.image.load("normal1.png")
-greyed1 = pygame.image.load("greyed1.png")
 greyed2 = pygame.image.load("greyed2.png")
 hover1 = pygame.image.load("hover1.png")
 hover2 = pygame.image.load("hover2.png")
+normalBoss = pygame.image.load("normalBoss.png")
+greyedBoss = pygame.image.load("greyedBoss.png")
+hoverBoss = pygame.image.load("hoverBoss.png")
+#Import pictures for end scene
+winnerbg = pygame.image.load("youAreWinner.png")
+continueButton = pygame.image.load("continue.png")
+hoverContinueButton = pygame.image.load("hoverContinue.png")
+resetSlotButton = pygame.image.load("resetSlot.png")
+hoverResetSlotButton = pygame.image.load("hoverResetSlot.png")
 #Loads death screen
 uDed = pygame.image.load("uDed.png")
 #Import weapon overview button
@@ -300,10 +305,13 @@ while run:
 #If the mouse is in this range mouseL[0] in range (X,X) and mouse[1] in range (Y,Y) - CHANGE COMMENT:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
+                    slotNumber = 1
                     FileHandler = open("slot1.txt", "r")
                 elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
+                    slotNumber = 2
                     FileHandler = open("slot2.txt", "r")
                 elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
+                    slotNumber = 3
                     FileHandler = open("slot3.txt", "r")
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
@@ -443,6 +451,54 @@ while run:
                             win.blit(greyed2,(300,150))
                         else:
                             win.blit(normal2,(300,150))
+                        if mouseL[0] in range(450,550) and mouseL[1] in range(150,250) and Player.reachedLevel >= 3:
+                            win.blit(hover2,(450,150))
+                        elif Player.reachedLevel < 3:
+                            win.blit(greyed2,(450,150))
+                        else:
+                            win.blit(normal2,(450,150))
+                        if mouseL[0] in range(150,250) and mouseL[1] in range(300,400) and Player.reachedLevel >= 4:
+                            win.blit(hover2,(150,300))
+                        elif Player.reachedLevel < 4:
+                            win.blit(greyed2,(150,300))
+                        else:
+                            win.blit(normal2,(150,300))
+                        if mouseL[0] in range(300,400) and mouseL[1] in range(300,400) and Player.reachedLevel >= 5:
+                            win.blit(hover2,(300,300))
+                        elif Player.reachedLevel < 5:
+                            win.blit(greyed2,(300,300))
+                        else:
+                            win.blit(normal2,(300,300))
+                        if mouseL[0] in range(450,550) and mouseL[1] in range(300,400) and Player.reachedLevel >= 6:
+                            win.blit(hover2,(450,300))
+                        elif Player.reachedLevel < 6:
+                            win.blit(greyed2,(450,300))
+                        else:
+                            win.blit(normal2,(450,300))
+                        if mouseL[0] in range(150,250) and mouseL[1] in range(450,550) and Player.reachedLevel >= 7:
+                            win.blit(hover2,(150,450))
+                        elif Player.reachedLevel < 7:
+                            win.blit(greyed2,(150,450))
+                        else:
+                            win.blit(normal2,(150,450))
+                        if mouseL[0] in range(300,400) and mouseL[1] in range(450,550) and Player.reachedLevel >= 8:
+                            win.blit(hover2,(300,450))
+                        elif Player.reachedLevel < 8:
+                            win.blit(greyed2,(300,450))
+                        else:
+                            win.blit(normal2,(300,450))
+                        if mouseL[0] in range(450,550) and mouseL[1] in range(450,550) and Player.reachedLevel >= 9:
+                            win.blit(hover2,(450,450))
+                        elif Player.reachedLevel < 9:
+                            win.blit(greyed2,(450,450))
+                        else:
+                            win.blit(normal2,(450,450))
+                        if mouseL[0] in range(600,700) and mouseL[1] in range(150,550) and Player.reachedLevel >= 10:
+                            win.blit(hoverBoss,(600,150))
+                        elif Player.reachedLevel < 10:
+                            win.blit(greyedBoss,(600,150))
+                        else:
+                            win.blit(normalBoss,(600,150))
                         for event in pygame.event.get():
                             if event.type == pygame.QUIT:
                                 run = False
@@ -457,6 +513,46 @@ while run:
                                      if Player.reachedLevel >= 2:
                                         scene = "battle"
                                         monsterLevel = 2
+                                        townLoop = False
+                                elif mouseL[0] in range(450,550) and mouseL[1] in range(150,250):
+                                     if Player.reachedLevel >= 3:
+                                        scene = "battle"
+                                        monsterLevel = 3
+                                        townLoop = False
+                                elif mouseL[0] in range(150,250) and mouseL[1] in range(300,400):
+                                     if Player.reachedLevel >= 4:
+                                        scene = "battle"
+                                        monsterLevel = 4
+                                        townLoop = False
+                                elif mouseL[0] in range(300,400) and mouseL[1] in range(300,400):
+                                     if Player.reachedLevel >= 5:
+                                        scene = "battle"
+                                        monsterLevel = 5
+                                        townLoop = False
+                                elif mouseL[0] in range(450,550) and mouseL[1] in range(300,400):
+                                     if Player.reachedLevel >= 6:
+                                        scene = "battle"
+                                        monsterLevel = 6
+                                        townLoop = False
+                                elif mouseL[0] in range(150,250) and mouseL[1] in range(450,550):
+                                     if Player.reachedLevel >= 7:
+                                        scene = "battle"
+                                        monsterLevel = 7
+                                        townLoop = False
+                                elif mouseL[0] in range(300,400) and mouseL[1] in range(450,550):
+                                     if Player.reachedLevel >= 8:
+                                        scene = "battle"
+                                        monsterLevel = 8
+                                        townLoop = False
+                                elif mouseL[0] in range(450,550) and mouseL[1] in range(450,550):
+                                     if Player.reachedLevel >= 9:
+                                        scene = "battle"
+                                        monsterLevel = 9
+                                        townLoop = False
+                                elif mouseL[0] in range(600,700) and mouseL[1] in range(150,550):
+                                     if Player.reachedLevel >= 10:
+                                        scene = "battle"
+                                        monsterLevel = 10
                                         townLoop = False
                                 else:
                                     townLoop = False
@@ -566,7 +662,23 @@ while run:
         if monsterLevel == 1:
             Monster = MonsterClass(monster, 800, 300, 440, 100, 1, 0.5, 2, 0)
         elif monsterLevel == 2:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 5, 4, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 5, 0.8, 2, 0)
+        elif monsterLevel == 3:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 10, 1.2, 2, 0)
+        elif monsterLevel == 4:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 20, 1.6, 2, 0)
+        elif monsterLevel == 5:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 40, 2, 2, 0)
+        elif monsterLevel == 6:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 80, 2.2, 2, 0)
+        elif monsterLevel == 7:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 160, 2.4, 2, 0)
+        elif monsterLevel == 8:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 320, 2.6, 2, 0)
+        elif monsterLevel == 9:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 640, 2.8, 2, 0)
+        elif monsterLevel == 10:
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 10000000000000000000, 3, 2, 0)
         else:
             print("ERROR!!!")
 #Sets some variables for the fighting scene
@@ -714,7 +826,37 @@ while run:
                             Player.reachedLevel = monsterLevel + 1
                         print("Monster Level:", str(Player.reachedLevel))
                 # Changes the scene back to town
+                        if Player.reachedLevel == 11:
+                            townLoop = True
+                            while townLoop:
+                                pygame.display.update()
+                                pygame.time.delay(20)
+                                mouseL = pygame.mouse.get_pos()
+                                win.blit(winnerbg,(0,0))
+                                if mouseL[0] in range(100,250) and mouseL[1] in range(400,440):
+                                    win.blit(hoverContinueButton,(100,400))
+                                else:
+                                    win.blit(continueButton,(100,400))
+                                if mouseL[0] in range(800,950) and mouseL[1] in range(400,440):
+                                    win.blit(hoverResetSlotButton,(800,400))
+                                else:
+                                    win.blit(resetSlotButton,(800,400))
+                                for event in pygame.event.get():
+                                    if event.type == pygame.QUIT:
+                                        run = False
+                                        scene = "exit"
+                                if event.type == pygame.MOUSEBUTTONUP:
+                                    if mouseL[0] in range(100,250) and mouseL[1] in range(400,440):
+                                        townLoop = False
+                                    elif mouseL[0] in range(800,950) and mouseL[1] in range(400,440):
+                                        Player = PlayerClass(wizard, 300,300,100,100,[woodenStick],"woodenStick",0,1)
+                                        townLoop = False
+                                    else:
+                                        continue
+
                         scene = "town"
+
+
             
             
 
