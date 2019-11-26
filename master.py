@@ -26,7 +26,7 @@ broadSword = {
     "attack": 10,
     "spellPower": 0,
     "armor": 5,
-    "price": 43252
+    "price": 100
 }
 crystalStaff= {
     "name": "crystalStaff",
@@ -34,7 +34,7 @@ crystalStaff= {
     "attack": 5,
     "spellPower": 300,
     "armor": 0,
-    "price": 113212
+    "price": 15
 }
 
 #Import images
@@ -158,7 +158,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1, dmgMulti=1, difference=2, critCh=0):
+    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1, dmgMulti=1, difference=2, critCh=0, baseDamage=8):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
@@ -178,6 +178,7 @@ class MonsterClass:
         self.dmgMulti = dmgMulti
         self.difference = difference
         self.critCh = critCh
+        self.baseDamage = baseDamage
 
     #function that moves the monster on screen + gives feedback to indicate when monster is done attack/ready to attack
     def moveAnimation(self, mx=20, my=0, startingPosi=600):
@@ -202,7 +203,7 @@ class MonsterClass:
     #Monster dmg function to determine dmg and crit
     def dealDamage(self, a=0):
         #the dmg calulation it self
-        dmg = random.randint(((8-self.difference)*self.dmgMulti),((8+self.difference)*self.dmgMulti))
+        dmg = random.randint(((self.baseDamage-self.difference)*self.dmgMulti),((self.baseDamage+self.difference)*self.dmgMulti))
         #the calculation of the crit chance - default is set so the monster cannot crit - further explained in the spell class
         getCritChance = random.randint(1,10)
         if (self.critCh/10) >= getCritChance:
@@ -660,23 +661,23 @@ while run:
     if scene == "battle":
 #Loads the monster
         if monsterLevel == 1:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 1, 0.5, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 1, 1, 2, 0, 8)
         elif monsterLevel == 2:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 5, 0.8, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 5, 1, 4, 10, 8)
         elif monsterLevel == 3:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 10, 1.2, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 10, 1, 2, 0, 10)
         elif monsterLevel == 4:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 20, 1.6, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 20, 2, 2, 0, 7)
         elif monsterLevel == 5:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 40, 2, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 40, 2, 2, 0, 8)
         elif monsterLevel == 6:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 80, 2.2, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 80, 2, 5, 50, 8)
         elif monsterLevel == 7:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 160, 2.4, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 160, 3, 2, 0, 8)
         elif monsterLevel == 8:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 320, 2.6, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 320, 4, 4, 0, 7)
         elif monsterLevel == 9:
-            Monster = MonsterClass(monster, 800, 300, 440, 100, 640, 2.8, 2, 0)
+            Monster = MonsterClass(monster, 800, 300, 440, 100, 640, 4, 2, 0, 10)
         elif monsterLevel == 10:
             Monster = MonsterClass(monster, 800, 300, 440, 100, 10000000000000000000, 3, 2, 0)
         else:
@@ -776,6 +777,8 @@ while run:
                     win.blit(uDed,(0,0))
                     pygame.display.update()
                     pygame.time.delay(5000)
+                    Player.HP = Player.startHP
+                    Player.MP = Player.startMP
                     scene = "town"
             #Renders the monster's image according to the assigned x- and y values
             win.blit(Monster.image,(Monster.x,Monster.y))
@@ -785,7 +788,7 @@ while run:
     #########
     #########
     # If you have queued an attack, this becomes True, and executes
-        if runAnimation:
+        if runAnimation and not spellVariable.checkMana() == "noMana":
             #Since you have asked to run the animation, it will now show the image for the spell queued
             win.blit(spellVariable.image,(spellVariable.x,spellVariable.y))
             #Moves the animation and checks if it has reached its maximum position based on the return function
@@ -849,7 +852,7 @@ while run:
                                     if mouseL[0] in range(100,250) and mouseL[1] in range(400,440):
                                         townLoop = False
                                     elif mouseL[0] in range(800,950) and mouseL[1] in range(400,440):
-                                        Player = PlayerClass(wizard, 300,300,100,100,[woodenStick],"woodenStick",0,1)
+                                        Player = PlayerClass(wizard, 300,300,100,100,["woodenStick"],"woodenStick",0,1)
                                         townLoop = False
                                     else:
                                         continue
