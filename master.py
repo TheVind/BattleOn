@@ -13,6 +13,7 @@ font = pygame.font.Font('freesansbold.ttf', 16)
 
 #Dictionaries for weapon
 woodenStick = {
+    "price": 0,
     "name": "woodenStick",
     "critChance": 10,
     "attack": 5,
@@ -55,6 +56,10 @@ battlebg = pygame.image.load("forest.jpg")
 battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
 exitButton = pygame.image.load("exit.png")
+hoverExitButton = pygame.image.load("hoverExit.png")
+hoverSaveGame = pygame.image.load("hoverSaveGame.png")
+hoverWeaponShop = pygame.image.load("hoverWeaponShop.png")
+hoverWeapons = pygame.image.load("hoverWeapons.png")
 #Gets the wizard image
 wizard = pygame.image.load("wizard.png")
 zulul = pygame.image.load("ZULUL.png")
@@ -66,6 +71,27 @@ normal1 = pygame.image.load("normal1.png")
 greyed2 = pygame.image.load("greyed2.png")
 hover1 = pygame.image.load("hover1.png")
 hover2 = pygame.image.load("hover2.png")
+hover3 = pygame.image.load("hover3.png")
+normal3 = pygame.image.load("normal3.png")
+greyed3 = pygame.image.load("greyed3.png")
+hover4 = pygame.image.load("hover4.png")
+normal4 = pygame.image.load("normal4.png")
+greyed4 = pygame.image.load("greyed4.png")
+hover5 = pygame.image.load("hover5.png")
+normal5 = pygame.image.load("normal5.png")
+greyed5 = pygame.image.load("greyed5.png")
+hover6 = pygame.image.load("hover6.png")
+normal6 = pygame.image.load("normal6.png")
+greyed6 = pygame.image.load("greyed6.png")
+hover7 = pygame.image.load("hover7.png")
+normal7 = pygame.image.load("normal7.png")
+greyed7 = pygame.image.load("greyed7.png")
+hover8 = pygame.image.load("hover8.png")
+normal8 = pygame.image.load("normal8.png")
+greyed8 = pygame.image.load("greyed8.png")
+hover9 = pygame.image.load("hover9.png")
+normal9 = pygame.image.load("normal9.png")
+greyed9 = pygame.image.load("greyed9.png")
 normalBoss = pygame.image.load("normalBoss.png")
 greyedBoss = pygame.image.load("greyedBoss.png")
 hoverBoss = pygame.image.load("hoverBoss.png")
@@ -339,8 +365,13 @@ while run:
     while scene == "saveGame":
         pygame.display.update()
         pygame.time.delay(20)
+        #Gets location of mouse - useless for now? not sure why it doesnt work
+        mouseL = pygame.mouse.get_pos()
         win.blit(savedScreen,(0,0))
-        win.blit(exitButton,(465,500))
+        if mouseL[0] in range(465,565) and mouseL[1] in range(500,540):
+            win.blit(hoverExitButton,(465,500))
+        else:
+            win.blit(exitButton,(465,500))
         if not saveSlot == False:
             textRectSave = (BigFont.render(str(saveSlot), True, (255,255,255))).get_rect()
             textRectSave.center = (210,520)
@@ -351,8 +382,6 @@ while run:
                 scene = "exit"
 #After you click, and release your finger from the left-click, do:
             if event.type == pygame.MOUSEBUTTONUP:
-#Gets location of mouse - useless for now? not sure why it doesnt work
-                mouseL = pygame.mouse.get_pos()
 #If the mouse is in this range:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
@@ -395,9 +424,18 @@ while run:
         mouseL = pygame.mouse.get_pos()
         win.blit(townImage, (0,0))
         #pygame.draw.rect(win, (255,0,0), (50, 350, 150, 40))
-        win.blit(scuffedButton, (850,350))
-        win.blit(weaponButton,(300,350))
-        win.blit(weaponShopButton,(550,350))
+        if mouseL[0] in range(850,1000) and mouseL[1] in range(350,390):
+            win.blit(hoverSaveGame,(850,350))
+        else:
+            win.blit(scuffedButton, (850,350))
+        if mouseL[0] in range(300,430) and mouseL[1] in range(350,390):
+            win.blit(hoverWeapons,(300,350))
+        else:    
+            win.blit(weaponButton,(300,350))
+        if mouseL[0] in range(550,720) and mouseL[1] in range(350,390):
+            win.blit(hoverWeaponShop,(550,350))
+        else:
+            win.blit(weaponShopButton,(550,350))
         #Mouse over effect for the battle button (just for show)
         if mouseL[0] in range(50,200) and mouseL[1] in range(350,390):
             win.blit(battleButtonRed, (50,350))
@@ -431,47 +469,47 @@ while run:
                         else:
                             win.blit(normal2,(300,150))
                         if mouseL[0] in range(450,550) and mouseL[1] in range(150,250) and Player.reachedLevel >= 3:
-                            win.blit(hover2,(450,150))
+                            win.blit(hover3,(450,150))
                         elif Player.reachedLevel < 3:
-                            win.blit(greyed2,(450,150))
+                            win.blit(greyed3,(450,150))
                         else:
-                            win.blit(normal2,(450,150))
+                            win.blit(normal3,(450,150))
                         if mouseL[0] in range(150,250) and mouseL[1] in range(300,400) and Player.reachedLevel >= 4:
-                            win.blit(hover2,(150,300))
+                            win.blit(hover4,(150,300))
                         elif Player.reachedLevel < 4:
-                            win.blit(greyed2,(150,300))
+                            win.blit(greyed4,(150,300))
                         else:
-                            win.blit(normal2,(150,300))
+                            win.blit(normal4,(150,300))
                         if mouseL[0] in range(300,400) and mouseL[1] in range(300,400) and Player.reachedLevel >= 5:
-                            win.blit(hover2,(300,300))
+                            win.blit(hover5,(300,300))
                         elif Player.reachedLevel < 5:
-                            win.blit(greyed2,(300,300))
+                            win.blit(greyed5,(300,300))
                         else:
-                            win.blit(normal2,(300,300))
+                            win.blit(normal5,(300,300))
                         if mouseL[0] in range(450,550) and mouseL[1] in range(300,400) and Player.reachedLevel >= 6:
-                            win.blit(hover2,(450,300))
+                            win.blit(hover6,(450,300))
                         elif Player.reachedLevel < 6:
-                            win.blit(greyed2,(450,300))
+                            win.blit(greyed6,(450,300))
                         else:
-                            win.blit(normal2,(450,300))
+                            win.blit(normal6,(450,300))
                         if mouseL[0] in range(150,250) and mouseL[1] in range(450,550) and Player.reachedLevel >= 7:
-                            win.blit(hover2,(150,450))
+                            win.blit(hover7,(150,450))
                         elif Player.reachedLevel < 7:
-                            win.blit(greyed2,(150,450))
+                            win.blit(greyed7,(150,450))
                         else:
-                            win.blit(normal2,(150,450))
+                            win.blit(normal7,(150,450))
                         if mouseL[0] in range(300,400) and mouseL[1] in range(450,550) and Player.reachedLevel >= 8:
-                            win.blit(hover2,(300,450))
+                            win.blit(hover8,(300,450))
                         elif Player.reachedLevel < 8:
-                            win.blit(greyed2,(300,450))
+                            win.blit(greyed8,(300,450))
                         else:
-                            win.blit(normal2,(300,450))
+                            win.blit(normal8,(300,450))
                         if mouseL[0] in range(450,550) and mouseL[1] in range(450,550) and Player.reachedLevel >= 9:
-                            win.blit(hover2,(450,450))
+                            win.blit(hover9,(450,450))
                         elif Player.reachedLevel < 9:
-                            win.blit(greyed2,(450,450))
+                            win.blit(greyed9,(450,450))
                         else:
-                            win.blit(normal2,(450,450))
+                            win.blit(normal9,(450,450))
                         if mouseL[0] in range(600,700) and mouseL[1] in range(150,550) and Player.reachedLevel >= 10:
                             win.blit(hoverBoss,(600,150))
                         elif Player.reachedLevel < 10:
@@ -535,11 +573,23 @@ while run:
                                         townLoop = False
                                 else:
                                     townLoop = False
-                #    scene = "battle"
                 elif mouseL[0] in range(550,700) and mouseL[1] in range(350,390):
                     townLoop = True
                     while townLoop:
                         win.blit(townImage, (0,0))
+                        mouseL = pygame.mouse.get_pos()
+                        if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
+                            weaponString = "Name: %s, Price: %s, Crit chance: %s, Attack: %s, Spell Power: %s, Armor: %s" % (woodenStick["name"], woodenStick["price"], woodenStick["critChance"], woodenStick["attack"], woodenStick["spellPower"], woodenStick["armor"])
+                        elif mouseL[0] in range(200,325) and mouseL[1] in range(50,175):
+                            weaponString = "Name: %s, Price: %s, Crit chance: %s, Attack: %s, Spell Power: %s, Armor: %s" % (broadSword["name"], broadSword["price"], broadSword["critChance"], broadSword["attack"], broadSword["spellPower"], broadSword["armor"])
+                        elif mouseL[0] in range(350,475) and mouseL[1] in range(50,175):
+                            weaponString = "Name: %s, Price: %s, Crit chance: %s, Attack: %s, Spell Power: %s, Armor: %s" % (crystalStaff["name"], crystalStaff["price"], crystalStaff["critChance"], crystalStaff["attack"], crystalStaff["spellPower"], crystalStaff["armor"])
+                        else:
+                            weaponString = ""
+                        weaponInfo = font.render(weaponString, True, (255,255,255))
+                        weaponInfoRect = weaponInfo.get_rect()
+                        weaponInfoRect.center = (550,260)
+                        win.blit(weaponInfo, weaponInfoRect)
                         textForGold = "Gold: " + str(Player.gold)
                         textRectHP = (BigFont.render(str(textForGold), True, (255,255,255))).get_rect()
                         textRectHP.center = (250,550)
@@ -564,7 +614,6 @@ while run:
                                 scene = "exit"
                                 townLoop = False
                             if event.type == pygame.MOUSEBUTTONUP:
-                                mouseL = pygame.mouse.get_pos()
                                 if mouseL[0] in range(50,175) and mouseL[1] in range(50,175):
                                     if "woodenStick" not in Player.weapons:
                                         Player.weapons.append("woodenStick")
