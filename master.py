@@ -114,6 +114,11 @@ woodenStickImage = pygame.image.load("woodenStick.png")
 woodenStickGreyedImage = pygame.image.load("woodenStickGREYED.png")
 broadSwordImage = pygame.image.load("broadSword.png")
 broadSwordGreyedImage = pygame.image.load("broadSwordGREYED.png")
+#Import the Attack menu + hover
+attackMenu = pygame.image.load("AttackBar.jpg")
+atkHover = pygame.image.load("attackHover.jpg")
+fireHover = pygame.image.load("fireballHover.jpg")
+lightHover = pygame.image.load("lightningHover.jpg")
 #topleft small icon
 pygame.display.set_icon(zulul)
 
@@ -720,6 +725,7 @@ while run:
             weapon = crystalStaff
         elif Player.weaponEquipped == "broadSword":
             weapon = broadSword
+
 # Variable to keep track on whether or not you have queued an attack
         runAnimation = False
 #Shifts to the battle scene
@@ -728,29 +734,34 @@ while run:
 #The battle scene! - not much going on atm tho
     while scene == "battleScene":
         pygame.time.delay(20)
+        mousePos = pygame.mouse.get_pos()
         pygame.display.update()
         # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
+        # KANPPER IMPLEMENTERET, VI SKAL HAVE SLETTET NOGET HER ER IKKE HAR NOGET MED KNAPPER AT GØRE!
         keys = pygame.key.get_pressed()
         #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 #run = False
                 #scene = "exit"
                 canAttack = False
-        # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
-            elif keys[pygame.K_f] and canAttack:
-        # Sets the variable used to make animation and deal damage equal to the class defined as fireball
-                spellVariable = FireballClass
-        # Queues the attack through this variable
-                runAnimation = True
-            elif keys[pygame.K_l] and canAttack:
-        # Same as above, but for lightning
-                spellVariable = LightningClass
-                runAnimation = True
-            elif keys[pygame.K_a] and canAttack:
-                spellVariable = Player
-                runAnimation = True
-        #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490) and canAttack:
+            # Sets the variable used to make animation and deal damage equal to the class defined as fireball
+                    spellVariable = FireballClass
+            # Queues the attack through this variable
+                    runAnimation = True
+                elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560) and canAttack:
+            # Same as above, but for lightning
+                    spellVariable = LightningClass
+                    runAnimation = True
+                elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400) and canAttack:
+                    spellVariable = Player
+                    runAnimation = True
+            #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
             
 
         #Renders the background for the scene
@@ -772,6 +783,16 @@ while run:
         #NEED COMMENTS HERE
         win.blit((font.render(str(Player.HP), True, (255,255,255))), textRectHP)
         win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
+        #Load the attack menu + hover effects
+        #not sure why it has to be here, tried a couple places, but this place is the only way i can get the hover to work
+        if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490):
+            win.blit(fireHover, (530, 350))
+        elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560):
+            win.blit(lightHover, (530, 350))
+        elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400):
+            win.blit(atkHover, (530, 350))
+        else:
+            win.blit(attackMenu, (530, 350))
 
 
         #Below is code for the Monster's HP bar
