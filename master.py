@@ -736,10 +736,6 @@ while run:
         pygame.time.delay(20)
         mousePos = pygame.mouse.get_pos()
         pygame.display.update()
-        # NEDENSTÅENDE SLETTES NÅR VI HAR IMPLEMENTERET KNAPPER !!!!!!!!!!!!!!!!!!!!!!
-        # KANPPER IMPLEMENTERET, VI SKAL HAVE SLETTET NOGET HER ER IKKE HAR NOGET MED KNAPPER AT GØRE!
-        keys = pygame.key.get_pressed()
-        #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
           
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -785,13 +781,13 @@ while run:
         win.blit((font.render(str(Player.MP), True, (255,255,255))), textRectMana)
         #Load the attack menu + hover effects
         #not sure why it has to be here, tried a couple places, but this place is the only way i can get the hover to work
-        if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490):
+        if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490) and canAttack and not runAnimation:
             win.blit(fireHover, (530, 350))
-        elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560):
+        elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560) and canAttack and not runAnimation:
             win.blit(lightHover, (530, 350))
-        elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400):
+        elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400) and canAttack and not runAnimation:
             win.blit(atkHover, (530, 350))
-        else:
+        elif not runAnimation and canAttack:
             win.blit(attackMenu, (530, 350))
 
 
