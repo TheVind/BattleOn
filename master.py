@@ -2,10 +2,10 @@ import pygame
 import random
 
 #Initiate Pygame and fonts (text to screen)
-pygame.init()
-pygame.font.init()
-win = pygame.display.set_mode((1100, 600))
-pygame.display.set_caption("Ugandan BattleOn")
+pygame.init() # Initiates pygame
+pygame.font.init() # Initializes the font rendering
+win = pygame.display.set_mode((1100, 600)) # Sets the window size
+pygame.display.set_caption("Ugandan BattleOn") # Sets the caption
 
 #Sets a font, to use for damage text
 BigFont = pygame.font.Font('freesansbold.ttf', 40)
@@ -122,47 +122,47 @@ lightHover = pygame.image.load("lightningHover.jpg")
 #topleft small icon
 pygame.display.set_icon(zulul)
 
-#THIS SECTION NEEDS COMMENTS
+# Defines the Class (framework) of the player
 class PlayerClass:
-
+# Sets the variables it takes when initiating PlayerClass. If you do not put any, it takes the default values. There are defined to make it easier to remember what to write
     def __init__(self, image, x=300, y=300, hp=100, mana=100, weapons=[woodenStick], equipped=woodenStick, gold=0, reachedLevel=1):
         #having this paramter makes us able to swap character model
-        self.image = image
-        self.x = x
-        self.y = y
-        self.startHP = int(hp)
-        self.startMP = int(mana)
-        self.HP = int(hp)
-        self.MP = int(mana)
-        self.weapons = weapons
-        self.weaponEquipped = equipped
+        self.image = image # Sets the image (avatar) of the player
+        self.x = x # Sets starting x-value
+        self.y = y # Sets starting y-value
+        self.startHP = int(hp) # Sets how much HP the player starts with (used for restoring HP)
+        self.startMP = int(mana) # Sets how much mana, and rest same as above
+        self.HP = int(hp) # Current HP
+        self.MP = int(mana) # Current Mana
+        self.weapons = weapons # Array of weapons the player owns
+        self.weaponEquipped = equipped # The equipped weapon of the player
         #Parameter to gain/lose gold to get new weapon 
-        self.gold = int(gold)
-        self.startX = x
-        self.startY = y
-        self.moveBack = False
-        self.reachedLevel = reachedLevel
+        self.gold = int(gold) # The amount of gold the player has
+        self.startX = x # Starting x-value, used to keep control of where the player needs to go, and resetting
+        self.startY = y # Same as above, but with y
+        self.moveBack = False  # Variable to keep track, of whether the player needs to move forward or backwards when auto attacking
+        self.reachedLevel = reachedLevel # Keeps track of which level the player can access
 
-    def moveAnimation(self):
-        self.x += 20
-        if self.x >= 500:
+    def moveAnimation(self): # Method to move the image (by x- and y-values)
+        self.x += 20 # Moves the x-value (since it's the only one that needs moving)
+        if self.x >= 500: # Checks if the player has reached its maximum value is reached, if it is, it is moving back afterwards
             self.moveBack = True
-        if self.moveBack:
+        if self.moveBack: # So if it needs to move back, it just withdraw twice the value as is added
             self.x -= 40
-        if self.startX > self.x:
+        if self.startX > self.x: # It is has gone beyond (below actually) its starting position, you must be finish with the animation, so it resets the value, and return False
             self.moveBack = False
             return False
         else:
-            return True
+            return True # Returns True if it has not finished the animation, so it continues running
     
-    def checkMana(self):
-        return True
+    def checkMana(self): # Needs to be here, even though this does not require mana, but the spells do, and Python isn't happy if it is trying to run a method that is not defined.
+        return True # Runs it no matter how much mana you have
 
-    def resetXY(self):
+    def resetXY(self): # Rests the x- and y-values
         self.x = self.startX
         self.y = self.startY
 
-    def dealDamage(self, critCh=10, a=0, sp=0, attack=0):
+    def dealDamage(self, critCh=10, a=0, sp=0, attack=0): # Function to deal damage
         dmg = random.randint(int(attack-(attack*0.1)),int(attack+(attack*0.1)))
         #Variable to generate chance to crit - random number between 1 and 10
         getCritChance = random.randint(1,10)
@@ -737,10 +737,10 @@ while run:
         mousePos = pygame.mouse.get_pos()
         pygame.display.update()
           
+
+# Function if you try to exit the game, you basically just skip your turn of attacking. U no get monster away.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #run = False
-                #scene = "exit"
                 canAttack = False
 
 
@@ -757,8 +757,7 @@ while run:
                 elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400) and canAttack and not runAnimation:
                     spellVariable = Player
                     runAnimation = True
-            #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            
+        
 
         #Renders the background for the scene
         win.blit(battlebg, (0,0))
