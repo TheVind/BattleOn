@@ -745,16 +745,16 @@ while run:
 
 
             if event.type == pygame.MOUSEBUTTONUP:
-                if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490) and canAttack:
+                if mousePos[0] in range(530, 630) and mousePos[1] in range(410, 490) and canAttack and not runAnimation:
             # Sets the variable used to make animation and deal damage equal to the class defined as fireball
                     spellVariable = FireballClass
             # Queues the attack through this variable
                     runAnimation = True
-                elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560) and canAttack:
+                elif mousePos[0] in range(530, 630) and mousePos[1] in range(500, 560) and canAttack and not runAnimation:
             # Same as above, but for lightning
                     spellVariable = LightningClass
                     runAnimation = True
-                elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400) and canAttack:
+                elif mousePos[0] in range(530, 630) and mousePos[1] in range(350, 400) and canAttack and not runAnimation:
                     spellVariable = Player
                     runAnimation = True
             #Hertil !!!!!!!!!!!!!!!!!!!!!!!!!!!!
