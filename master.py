@@ -685,7 +685,6 @@ while run:
                                         Player.weaponEquipped = "crystalStaff"
                                 else:
                                     townLoop = False
-                                print(Player.weaponEquipped)
                 else:
                     continue
 
@@ -856,16 +855,11 @@ while run:
                         pygame.display.update()
                 # Lets you watch the dead mob for a while
                         pygame.time.delay(1000)
-                # CHECK STRING ---- SKAL SLETTES !!!! ---- men et tjek for hvor meget guld du har før og efter mobbet dropper guld
-                        print(str(Player.gold))
-                # Rewards the player with some gold drop after the mob dies
                         Player.gold += Monster.goldDrop
-                        print(str(Player.gold))
                         Player.HP = Player.startHP
                         Player.MP = Player.startMP
                         if Player.reachedLevel < monsterLevel + 1:
                             Player.reachedLevel = monsterLevel + 1
-                        print("Monster Level:", str(Player.reachedLevel))
                 # Changes the scene back to town
                         if Player.reachedLevel == 11:
                             townLoop = True
