@@ -1,6 +1,6 @@
 100
-500
+100
 woodenStick
 woodenStick
-1023201321
+0
 1

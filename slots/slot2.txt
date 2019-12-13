@@ -1,6 +1,6 @@
-100
 500
-woodenStick crystalStaff broadSword 
-crystalStaff
+500
+woodenStick
+woodenStick
 1023201321
 1
