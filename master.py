@@ -175,14 +175,9 @@ class PlayerClass:
         #Returns the final damage value, with the amount of damage dealt minus the damage absorbed by armor
         return int(dmg - armorPrevail)
 
-    def addWeapon(weapon):
-        self.weapons.append(weapon)
-
-    def goldChange(changeOfGold):
-        self.gold += changeOfGold
-
-    def fullHP(self):
+    def fullHPMP(self):
         self.HP = self.startHP
+        self.MP = self.startMP
     
 
 #Defines the monster animation and attack
@@ -715,7 +710,7 @@ while run:
             print("ERROR!!!")
 #Sets some variables for the fighting scene
         canAttack = True
-        Player.fullHP()
+        Player.fullHPMP()
 #Sets the weapon
         #weapon = Player.weapons[Player.weaponEquipped]
         if Player.weaponEquipped == "woodenStick":
@@ -819,8 +814,7 @@ while run:
                     win.blit(uDed,(0,0))
                     pygame.display.update()
                     pygame.time.delay(5000)
-                    Player.HP = Player.startHP
-                    Player.MP = Player.startMP
+                    Player.fullHPMP()
                     scene = "town"
             #Renders the monster's image according to the assigned x- and y values
             win.blit(Monster.image,(Monster.x,Monster.y))
@@ -856,8 +850,7 @@ while run:
                 # Lets you watch the dead mob for a while
                         pygame.time.delay(1000)
                         Player.gold += Monster.goldDrop
-                        Player.HP = Player.startHP
-                        Player.MP = Player.startMP
+                        Player.fullHPMP()
                         if Player.reachedLevel < monsterLevel + 1:
                             Player.reachedLevel = monsterLevel + 1
                 # Changes the scene back to town
