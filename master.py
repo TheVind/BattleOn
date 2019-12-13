@@ -239,40 +239,41 @@ class MonsterClass:
 
 #Class for the player, both dealing damage and animating
 class SpellClass:
-    def __init__(self, x=0, y=0, image=loading, manaCost=13, dmgMulti=2, difference=1, maxy=200, movex=20, movey=20):
-        self.x = x
-        self.y = y
-        self.startX = x
-        self.startY = y
+    def __init__(self, x=0, y=0, image=fireball, manaCost=13, dmgMulti=2, difference=1, maxy=200, movex=20, movey=20):
+        self.x = x # The position of the spell on the x axis
+        self.y = y # The position of the spell on the y axis
+        self.startX = x # Starting position of the spell (x axis) - used for resetting its coordinates
+        self.startY = y # Starting position of the spell (y axis) - used for resetting its coordinates
         #Sets the image to use for the animation
-        self.image = image
-        self.manaCost = manaCost
-        self.dmgMulti = dmgMulti
-        self.difference = difference
-        self.max = maxy
-        self.movex = movex
-        self.movey = movey
+        self.image = image # Sets the image of the spell (e.g. fireball or lightning)
+        self.manaCost = manaCost # Defines the mana cost of the spell
+        self.dmgMulti = dmgMulti # A multiplier for the spell's damage
+        self.difference = difference # Difference for the damage range in which the spell can hit
+        self.max = maxy # The max coordinate of the y-coordinate. Forces the spell to reset when reached
+        self.movex = movex # Amount of pixels it is moved each frame on the x axis
+        self.movey = movey # Amount of pixels it is moved each frame on the y axis
     #the moving of the spell picture - animation
     def moveAnimation(self):
         self.x += self.movex
         self.y += self.movey
         if self.max == self.y:
-            return False
+            return False # Check function to return when the animation is finished
         else:
-            return True
+            return True # Check function to return when the animation is finished
+    #Function to check whether you have enough mana to cast the spell
     def checkMana(self):
         if Player.MP < self.manaCost:
-            return "noMana"
+            return "noMana" # If you do not have enough mana, this function returns "noMana"
         else:
-            return "enoughMana"
+            return "enoughMana" # If you do have enough mana, this function returns "enoughMana"
+    # Function to reset the x and y coordinates after ended animation
     def resetXY(self):
         self.x = self.startX
         self.y = self.startY
-    def gainMana(self, mana, gain):
-        return (mana+gain)
-
+    # Function to deal damage with a spell. This function returns an integer, which is substracted from the monster's HP.
+    # It takes the parameter's, which are stored in either the monster's class (armor) and the rest is from the weapon's attributes (crit chance, spellpower and attack)
     def dealDamage(self, critCh=10, a=0, sp=0, attack=0):
-        if not Player.MP < self.manaCost:
+        if not Player.MP < self.manaCost: # One more check function, to see if you have enough mana to cast the spell
             dmg = random.randint(((5-self.difference)*self.dmgMulti),((5+self.difference)*self.dmgMulti))
         #Variable to generate chance to crit - random number between 1 and 10
             getCritChance = random.randint(1,10)
