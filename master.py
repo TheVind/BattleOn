@@ -39,84 +39,86 @@ crystalStaff= {
 }
 
 #Import images
+#Imports the loading screen
+loading = pygame.image.load("./images/loadingScreen.jpg")
 #Town image imported
-townImage = pygame.image.load("bgtownFinal.jpg")
+townImage = pygame.image.load("./images/bgtownFinal.jpg")
 #Download fireball and lightning image
-fireball = pygame.image.load("fireball.png")
-lightning = pygame.image.load("lightning.png")
+fireball = pygame.image.load("./images/fireball.png")
+lightning = pygame.image.load("./images/lightning.png")
 #Button imported
-scuffedButton = pygame.image.load("saveGame.png")
+scuffedButton = pygame.image.load("./images/saveGame.png")
 #Gets saving background screen
-savedScreen = pygame.image.load("saveScreen.jpg")
+savedScreen = pygame.image.load("./images/saveScreen.jpg")
 #Gets the battle background
 battlebg = pygame.image.load("./images/forest.jpg")
 #Gets scuffed button
-battleButton = pygame.image.load("battleB.png")
-battleButtonRed = pygame.image.load("battleBRed.png")
-exitButton = pygame.image.load("exit.png")
-hoverExitButton = pygame.image.load("hoverExit.png")
-hoverSaveGame = pygame.image.load("hoverSaveGame.png")
-hoverWeaponShop = pygame.image.load("hoverWeaponShop.png")
-hoverWeapons = pygame.image.load("hoverWeapons.png")
+battleButton = pygame.image.load("./images/battleB.png")
+battleButtonRed = pygame.image.load("./images/battleBRed.png")
+exitButton = pygame.image.load("./images/exit.png")
+hoverExitButton = pygame.image.load("./images/hoverExit.png")
+hoverSaveGame = pygame.image.load("./images/hoverSaveGame.png")
+hoverWeaponShop = pygame.image.load("./images/hoverWeaponShop.png")
+hoverWeapons = pygame.image.load("./images/hoverWeapons.png")
 #Gets the wizard image
-wizard = pygame.image.load("wizard.png")
-zulul = pygame.image.load("ZULUL.png")
+wizard = pygame.image.load("./images/wizard.png")
+zulul = pygame.image.load("./images/ZULUL.png")
 #Gets the monster
-monster = pygame.image.load("monster.png")
+monster = pygame.image.load("./images/monster.png")
 # IMPORTS THE NUMBERS FOR THE BATTLE SCENE
-normal2 = pygame.image.load("normal2.png")
-normal1 = pygame.image.load("normal1.png")
-greyed2 = pygame.image.load("greyed2.png")
-hover1 = pygame.image.load("hover1.png")
-hover2 = pygame.image.load("hover2.png")
-hover3 = pygame.image.load("hover3.png")
-normal3 = pygame.image.load("normal3.png")
-greyed3 = pygame.image.load("greyed3.png")
-hover4 = pygame.image.load("hover4.png")
-normal4 = pygame.image.load("normal4.png")
-greyed4 = pygame.image.load("greyed4.png")
-hover5 = pygame.image.load("hover5.png")
-normal5 = pygame.image.load("normal5.png")
-greyed5 = pygame.image.load("greyed5.png")
-hover6 = pygame.image.load("hover6.png")
-normal6 = pygame.image.load("normal6.png")
-greyed6 = pygame.image.load("greyed6.png")
-hover7 = pygame.image.load("hover7.png")
-normal7 = pygame.image.load("normal7.png")
-greyed7 = pygame.image.load("greyed7.png")
-hover8 = pygame.image.load("hover8.png")
-normal8 = pygame.image.load("normal8.png")
-greyed8 = pygame.image.load("greyed8.png")
-hover9 = pygame.image.load("hover9.png")
-normal9 = pygame.image.load("normal9.png")
-greyed9 = pygame.image.load("greyed9.png")
-normalBoss = pygame.image.load("normalBoss.png")
-greyedBoss = pygame.image.load("greyedBoss.png")
-hoverBoss = pygame.image.load("hoverBoss.png")
+normal2 = pygame.image.load("./images/normal2.png")
+normal1 = pygame.image.load("./images/normal1.png")
+greyed2 = pygame.image.load("./images/greyed2.png")
+hover1 = pygame.image.load("./images/hover1.png")
+hover2 = pygame.image.load("./images/hover2.png")
+hover3 = pygame.image.load("./images/hover3.png")
+normal3 = pygame.image.load("./images/normal3.png")
+greyed3 = pygame.image.load("./images/greyed3.png")
+hover4 = pygame.image.load("./images/hover4.png")
+normal4 = pygame.image.load("./images/normal4.png")
+greyed4 = pygame.image.load("./images/greyed4.png")
+hover5 = pygame.image.load("./images/hover5.png")
+normal5 = pygame.image.load("./images/normal5.png")
+greyed5 = pygame.image.load("./images/greyed5.png")
+hover6 = pygame.image.load("./images/hover6.png")
+normal6 = pygame.image.load("./images/normal6.png")
+greyed6 = pygame.image.load("./images/greyed6.png")
+hover7 = pygame.image.load("./images/hover7.png")
+normal7 = pygame.image.load("./images/normal7.png")
+greyed7 = pygame.image.load("./images/greyed7.png")
+hover8 = pygame.image.load("./images/hover8.png")
+normal8 = pygame.image.load("./images/normal8.png")
+greyed8 = pygame.image.load("./images/greyed8.png")
+hover9 = pygame.image.load("./images/hover9.png")
+normal9 = pygame.image.load("./images/normal9.png")
+greyed9 = pygame.image.load("./images/greyed9.png")
+normalBoss = pygame.image.load("./images/normalBoss.png")
+greyedBoss = pygame.image.load("./images/greyedBoss.png")
+hoverBoss = pygame.image.load("./images/hoverBoss.png")
 #Import pictures for end scene
-winnerbg = pygame.image.load("youAreWinner.png")
-continueButton = pygame.image.load("continue.png")
-hoverContinueButton = pygame.image.load("hoverContinue.png")
-resetSlotButton = pygame.image.load("resetSlot.png")
-hoverResetSlotButton = pygame.image.load("hoverResetSlot.png")
+winnerbg = pygame.image.load("./images/youAreWinner.png")
+continueButton = pygame.image.load("./images/continue.png")
+hoverContinueButton = pygame.image.load("./images/hoverContinue.png")
+resetSlotButton = pygame.image.load("./images/resetSlot.png")
+hoverResetSlotButton = pygame.image.load("./images/hoverResetSlot.png")
 #Loads death screen
-uDed = pygame.image.load("uDed.png")
+uDed = pygame.image.load("./images/uDed.png")
 #Import weapon overview button
-weaponButton = pygame.image.load("weapons.png")
+weaponButton = pygame.image.load("./images/weapons.png")
 #Import shop for weapons-button
-weaponShopButton = pygame.image.load("weaponShop.png")
+weaponShopButton = pygame.image.load("./images/weaponShop.png")
 #Import the weapons
-crystalStaffImage = pygame.image.load("crystalStaff.png")
-crystalStaffGreyedImage = pygame.image.load("crystalStaffGREYED.png")
-woodenStickImage = pygame.image.load("woodenStick.png")
-woodenStickGreyedImage = pygame.image.load("woodenStickGREYED.png")
-broadSwordImage = pygame.image.load("broadSword.png")
-broadSwordGreyedImage = pygame.image.load("broadSwordGREYED.png")
+crystalStaffImage = pygame.image.load("./images/crystalStaff.png")
+crystalStaffGreyedImage = pygame.image.load("./images/crystalStaffGREYED.png")
+woodenStickImage = pygame.image.load("./images/woodenStick.png")
+woodenStickGreyedImage = pygame.image.load("./images/woodenStickGREYED.png")
+broadSwordImage = pygame.image.load("./images/broadSword.png")
+broadSwordGreyedImage = pygame.image.load("./images/broadSwordGREYED.png")
 #Import the Attack menu + hover
-attackMenu = pygame.image.load("AttackBar.jpg")
-atkHover = pygame.image.load("attackHover.jpg")
-fireHover = pygame.image.load("fireballHover.jpg")
-lightHover = pygame.image.load("lightningHover.jpg")
+attackMenu = pygame.image.load("./images/AttackBar.jpg")
+atkHover = pygame.image.load("./images/attackHover.jpg")
+fireHover = pygame.image.load("./images/fireballHover.jpg")
+lightHover = pygame.image.load("./images/lightningHover.jpg")
 #topleft small icon
 pygame.display.set_icon(zulul)
 
@@ -182,7 +184,7 @@ class PlayerClass:
 class MonsterClass:
 #the init function defining all the default values when you first call it
 #This functions holds all the paramteres we need the monster to have
-    def __init__(self, image=loading, x=600, y=300, maxX = 440, HP=100, goldDrop=1, dmgMulti=1, difference=2, critCh=0, baseDamage=8):
+    def __init__(self, image=monster, x=600, y=300, maxX = 440, HP=100, goldDrop=1, dmgMulti=1, difference=2, critCh=0, baseDamage=8):
         self.image = image
         #Image position for the x coordinate in pygame
         self.x = x
