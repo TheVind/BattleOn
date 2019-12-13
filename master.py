@@ -39,8 +39,6 @@ crystalStaff= {
 }
 
 #Import images
-#imports our loading screen, kinda scuffed - needs to be changed
-loading = pygame.image.load("loadingScreen.jpg")
 #Town image imported
 townImage = pygame.image.load("bgtownFinal.jpg")
 #Download fireball and lightning image
@@ -51,7 +49,7 @@ scuffedButton = pygame.image.load("saveGame.png")
 #Gets saving background screen
 savedScreen = pygame.image.load("saveScreen.jpg")
 #Gets the battle background
-battlebg = pygame.image.load("forest.jpg")
+battlebg = pygame.image.load("./images/forest.jpg")
 #Gets scuffed button
 battleButton = pygame.image.load("battleB.png")
 battleButtonRed = pygame.image.load("battleBRed.png")
@@ -330,13 +328,13 @@ while run:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
                     slotNumber = 1
-                    FileHandler = open("slot1.txt", "r")
+                    FileHandler = open("./slots/slot1.txt", "r")
                 elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
                     slotNumber = 2
-                    FileHandler = open("slot2.txt", "r")
+                    FileHandler = open("./slots/slot2.txt", "r")
                 elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
                     slotNumber = 3
-                    FileHandler = open("slot3.txt", "r")
+                    FileHandler = open("./slots/slot3.txt", "r")
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 else:
                     continue
@@ -386,13 +384,13 @@ while run:
 #If the mouse is in this range:
                 if mouseL[0] in range(100,250) and mouseL[1] in range (200,350):
 #If you click slot1, it will load slot1
-                    FileHandler = open("slot1.txt", "w")
+                    FileHandler = open("./slots/slot1.txt", "w")
                     saveSlot = "Game saved to Slot 1"
                 elif mouseL[0] in range(400,550) and mouseL[1] in range (200,350):
-                    FileHandler = open("slot2.txt", "w")
+                    FileHandler = open("./slots/slot2.txt", "w")
                     saveSlot = "Game saved to Slot 2"
                 elif mouseL[0] in range(700,850) and mouseL[1] in range (200,350):
-                    FileHandler = open("slot3.txt", "w")
+                    FileHandler = open("./slots/slot3.txt", "w")
                     saveSlot = "Game saved to Slot 3"
 #If you do not select a slot, it does nothing, and continues to the top of the loop
                 elif mouseL[0] in range(465,545) and mouseL[1] in range(500,540):
